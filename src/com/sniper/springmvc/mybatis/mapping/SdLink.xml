@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdLink">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				l.name like #{name}
+			</if>
+			<if test="upid != null ">
+				and l.upid = #{upid}
+			</if>
+
+			<if test="url != null ">
+				and l.url = #{url}
+			</if>
+
+			<if test="enabled != null">
+				and l.viewnum = #{enabled}
+			</if>
+
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdLink">
+		INSERT INTO links
+		(name,upid,description,logo,url,viewnum,displayorder)
+		VALUES(#{name},#{linkGroup.id},#{description},#{logo},#{url},#{viewnum},#{displayorder})
+	</insert>
+
+	<update id="update" parameterType="SdLink">
+		UPDATE links
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="linkGroup != null">upid=#{linkGroup.id},</if>
+			<if test="description != null">description=#{description},</if>
+			<if test="logo != null">logo=#{logo},</if>
+			<if test="url != null">url=#{url},</if>
+			<if test="viewnum != null">viewnum=#{viewnum},</if>
+			<if test="displayorder != null">displayorder=#{displayorder},</if>
+		</set>
+		where linkid = #{linkid}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from links where
+		linkid=#{linkid}
+	</delete>
+
+	<resultMap type="SdLink" id="map">
+		<id column="linkid" property="linkid" />
+		<result column="name" property="name" />
+		<result column="description" property="description" />
+		<result column="logo" property="logo" />
+		<result column="url" property="url" />
+		<result column="viewnum" property="viewnum" />
+		<result column="displayorder" property="displayorder" />
+		<association property="linkGroup" javaType="SdLinkGroup">
+			<id column="upid" property="id" />
+			<result column="lt_name" property="name" />
+		</association>
+
+	</resultMap>
+
+	<select id="get" resultType="SdLink" parameterType="string">
+		select *
+		from
+		links
+		where linkid =
+		#{linkid}
+	</select>
+
+	<select id="select" resultType="SdLink" parameterType="SdLink"
+		resultMap="map">
+		select * from
+		links as l
+		left join mc_link_type as
+		lt
+		on l.upid = lt.lt_id
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap"
+		resultMap="map">
+		select * from
+		links as l
+		left join mc_link_type as
+		lt
+		on l.upid = lt.lt_id
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdLink"
+		resultMap="map">
+		select * from
+		links as l
+		left join mc_link_type as lt
+		on l.upid
+		= lt.lt_id
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		links as l
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdLink" parameterType="map"
+		resultMap="map">
+		select * from
+		links as l
+		left join mc_link_type as lt
+		on l.upid =
+		lt.lt_id
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

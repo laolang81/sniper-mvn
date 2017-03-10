@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- mybatis全局配置文件 -->
+<configuration>
+	<!-- 引入配置文件 -->
+	<settings>
+		<setting value="true" name="cacheEnabled" /> <!-- 使用缓存 -->
+		<setting name="callSettersOnNulls" value="true" /><!-- 为null不过滤 -->
+		<!-- <setting name="logImpl" value="STDOUT_LOGGING" /> -->
+	</settings>
+
+</configuration>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>山东省政府购买信息管理平台</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+<script src="script/jquery-1.12.2.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		function docu_size(){
+		var login_height = $(document).height();
+		$(".login_box").height(login_height)
+		$(".login_box h2").css("margin-top",login_height/4);
+		};
+		docu_size()
+		$(window).resize(function(){
+		  docu_size()
+		});
+	});
+</script>
+</head>
+
+<body>
+<div class="login_box">
+	<div class="login_win">
+    	<div class="login_ico">
+        	<img src="images/login_ico.png" width="131" height="88" alt=""/>
+        	<h4>登陆平台</h4>
+        </div>
+        <div class="login_user">
+        <span>用户名：</span><input type="text" size="40">
+        </div>
+      <div class="login_password">
+        <span>密&nbsp;码：</span><input type="text" size="40">
+        </div>
+        <div class="login_text">
+        <span><input type="checkbox">下次直接登陆</span><a href="#">直接进入后台</a>
+        </div>
+        <div class="login_button">
+        	<input type="submit" value="&nbsp;">
+        </div>
+  </div>
+</div>
+</body>
+</html>

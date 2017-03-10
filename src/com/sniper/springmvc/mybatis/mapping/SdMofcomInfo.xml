@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdMofcomInfo">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="mid != null ">
+				mid = #{mid}
+			</if>
+			<if test="sid != null ">
+				and sid = #{sid}
+			</if>
+			<if test="dateGt != null ">
+				<![CDATA[and date >= #{dateGt}]]>
+			</if>
+			<if test="date != null ">
+				<![CDATA[and date between #{date} and  (#{date} + 86400)]]>
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdMofcomInfo">
+		INSERT INTO mofcom_info
+		(mid,sid,itemid,type,subtitle,source,puttop,date,lastdate,del)
+		VALUES
+		(#{mid},#{sid},#{itemid},#{type},#{subtitle},#{source},#{puttop},#{date},#{lastdate},#{del})
+	</insert>
+
+	<update id="update" parameterType="SdMofcomInfo">
+		UPDATE mofcom_info
+		<set>
+			<if test="mid != null">mid=#{mid},</if>
+			<if test="sid != null">sid=#{sid},</if>
+			<if test="itemid != null">itemid=#{itemid},</if>
+			<if test="type != null">type=#{type},</if>
+			<if test="subtitle != null">subtitle=#{subtitle},</if>
+			<if test="source != null">source=#{source},</if>
+			<if test="puttop !=null">puttop=#{puttop},</if>
+			<if test="date != null">date=#{date},</if>
+			<if test="lastdate !=null">lastdate=#{lastdate},</if>
+			<if test="del !=null">del=#{del}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mofcom_info where
+		sid=#{id}
+	</delete>
+
+	<select id="get" resultType="SdMofcomInfo" parameterType="string">
+		select
+		*
+		from
+		mofcom_info
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdMofcomInfo" parameterType="SdMofcomInfo">
+		select * from
+		mofcom_info
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mofcom_info
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdMofcomInfo">
+		select * from
+		mofcom_info
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mofcom_info
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdMofcomInfo" parameterType="map">
+		select * from
+		mofcom_info
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

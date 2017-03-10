@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdMofcomItem">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="enabled != null ">
+				and enabled = #{enabled}
+			</if>
+			<if test="typeId != null ">
+				and typeId = #{typeId}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdMofcomItem">
+		INSERT INTO mofcom_item 
+		(mid,mname,fatherid,sdid,sdname,siteid,itemids,beizhu)
+		VALUES
+		(#{mid},#{mname},#{mid},#{fatherid},#{sdid},#{sdname},#{siteid},#{itemids},#{beizhu})
+	</insert>
+
+	<update id="update" parameterType="SdMofcomItem">
+		UPDATE mofcom_item
+		<set>
+			<if test="mid != null">mid=#{mid},</if>
+			<if test="mname != null">mname=#{mname},</if>
+			<if test="fatherid != null">fatherid=#{fatherid},</if>
+			<if test="sdid != null">sdid=#{sdid},</if>
+			<if test="sdname != null">sdname=#{sdname},</if>
+			<if test="siteid != null">siteid=#{siteid},</if>
+			<if test="itemids !=null">itemids=#{itemids},</if>
+			<if test="beizhu != null">beizhu=#{beizhu},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mofcom_item where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdMofcomItem" parameterType="string">
+		select
+		*
+		from
+		mofcom_item
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdMofcomItem" parameterType="SdMofcomItem">
+		select * from
+		mofcom_item
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mofcom_item
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdMofcomItem">
+		select * from
+		mofcom_item
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mofcom_item
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdMofcomItem" parameterType="map">
+		select * from
+		mofcom_item
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

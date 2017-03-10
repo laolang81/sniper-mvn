@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.MailFiles">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="mail_id != null ">
+				mail_id = #{mail_id}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="order">
+		<if test="order != null">
+			order by ${order}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="AdminGroup">
+		INSERT INTO
+		mc_mail_files
+		(
+		mail_id,file_id)
+		VALUES(#{mail_id},#{file_id})
+	</insert>
+
+	<update id="update" parameterType="AdminGroup">
+		UPDATE mc_mail_files
+		<set>
+			<if test="mail_id != null">mail_id=#{mail_id},</if>
+			<if test="file_id != null">file_id=#{file_id}</if>
+		</set>
+		where mail_id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from
+		mc_mail_files
+		where
+		mail_id=#{mail_id}
+	</delete>
+
+	<select id="get" resultType="AdminGroup" parameterType="string">
+		select *
+		from
+		mc_mail_files
+		where mail_id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="AdminGroup" parameterType="AdminGroup">
+		select * from
+		mc_mail_files
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="AdminGroup">
+		select * from
+		mc_mail_files
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_mail_files
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="AdminGroup" parameterType="map">
+		select *
+		from
+		mc_mail_files
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+
+
+</mapper>

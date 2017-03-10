@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdHistorySi">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="item != null ">
+				hs_item = #{item}
+			</if>
+			<if test="siteid != null ">
+				and hs_siteid = #{siteid}
+			</if>
+			<if test="stime != null ">
+				<![CDATA[ and hs_time_date >= #{stime}]]>
+			</if>
+			<if test="etime != null ">
+				<![CDATA[and hs_time_date <= #{etime}]]>
+			</if>
+
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdHistorySi">
+		INSERT INTO mc_history_si
+		(hs_siteid,hs_item,hs_view,hs_view_time,hs_time_date)
+		VALUES
+		(#{hs_siteid},#{description},#{attachment},#{typeId},#{enabled},#{width},#{height},#{url},#{sort},#{ctime})
+	</insert>
+
+	<update id="update" parameterType="SdHistorySi">
+		UPDATE mc_history_si
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="description != null">description=#{description},</if>
+
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_history_si
+		where
+		hs_id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdHistorySi" parameterType="string">
+		select *
+		from
+		mc_history_si
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdHistorySi" parameterType="SdHistorySi">
+		select * from
+		mc_history_si
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_history_si
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdHistorySi">
+		select * from
+		mc_history_si
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_history_si
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdHistorySi" parameterType="map">
+		select * from
+		mc_history_si
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

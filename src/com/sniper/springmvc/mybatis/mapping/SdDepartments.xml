@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdDepartments">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name regexp #{name}
+			</if>
+			<if test="shortName != null ">
+				and de_short_name = #{shortName}
+			</if>
+			<if test="enabled != null ">
+				and de_true = #{enabled}
+			</if>
+			<if test="home != null ">
+				and de_home = #{home}
+			</if>
+			<if test="type != null ">
+				and type in
+				<foreach collection="type" item="t" index="index" open="("
+					separator="," close=")">
+					#{t}
+				</foreach>
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdDepartments">
+		INSERT INTO departments
+		(name,de_short_name,type,banner,bshowimgnews,ex_url,de_ctime,de_true,de_home,de_order)
+		VALUES(#{name},#{deShortName},#{type},#{banner},#{bshowimgnews},#{exUrl},#{ctime},#{deTrue},#{deHome},#{deOrder})
+	</insert>
+
+	<update id="update" parameterType="SdDepartments">
+		UPDATE departments
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="deShortName != null">de_short_name=#{deShortName},</if>
+			<if test="type != null">type=#{type},</if>
+			<if test="banner != null">banner=#{banner},</if>
+			<if test="bshowimgnews != null">bshowimgnews=#{bshowimgnews},</if>
+			<if test="exUrl != null">ex_url=#{exUrl},</if>
+			<if test="deTrue !=null">de_true=#{deTrue},</if>
+			<if test="deHome != null">de_home=#{deHome},</if>
+			<if test="deOrder !=null">de_order=#{deOrder}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from departments where
+		id=#{id}
+	</delete>
+
+	<resultMap type="SdDepartments" id="resultMap">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="de_short_name" property="deShortName" />
+		<result column="type" property="type" />
+		<result column="banner" property="banner" />
+		<result column="bshowimgnews" property="bshowimgnews" />
+		<result column="ex_url" property="exUrl" />
+		<result column="de_true" property="deTrue" />
+		<result column="de_home" property="deHome" />
+		<result column="de_order" property="deOrder" />
+		<result column="de_ctime" property="ctime" />
+	</resultMap>
+
+	<select id="get" resultType="SdDepartments" parameterType="string"
+		resultMap="resultMap">
+		select *
+		from
+		departments
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdDepartments" parameterType="SdDepartments"
+		resultMap="resultMap">
+		select * from
+		departments
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap"
+		resultMap="resultMap">
+		select * from
+		departments
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdDepartments"
+		resultMap="resultMap">
+		select * from
+		departments
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		departments
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdDepartments" parameterType="map"
+		resultMap="resultMap">
+		select * from
+		departments
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SolrSearchKey">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+
+
+	<sql id="limit">
+		<if test="pageSize!= null">
+			limit #{pageSize}
+		</if>
+	</sql>
+
+	<sql id="where">
+		<where>
+			<if test="key != null ">
+				key = #{key}
+			</if>
+		</where>
+	</sql>
+
+	<insert id="insert" parameterType="SolrSearchKey">
+		INSERT INTO mc_solr_search_key
+		(id,key,lastDate,count,todayCount)
+		VALUES
+		(#{id},#{key},#{lastDate},#{count},#{todayCount})
+	</insert>
+
+	<update id="update" parameterType="SolrSearchKey">
+		UPDATE mc_solr_search_key
+		<set>
+			<if test="lastDate != null">lastDate=#{lastDate},</if>
+			<if test="count !=null">count=#{count},</if>
+			<if test="count !=null">todayCount=#{todayCount},</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<delete id="delete" parameterType="string">
+		delete from mc_solr_search_key where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="SolrSearchKey" parameterType="string">
+		select *
+		from
+		mc_solr_search_key
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SolrSearchKey" parameterType="SolrSearchKey">
+		select * from
+		mc_solr_search_key
+		<include refid="where" />
+		<include refid="order" />
+		<include refid="limit" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_solr_search_key
+		<include refid="where" />
+		<include refid="order" />
+		<include refid="limit" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SolrSearchKey">
+		select * from
+		mc_solr_search_key
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_solr_search_key
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SolrSearchKey" parameterType="map">
+		select * from
+		mc_solr_search_key
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

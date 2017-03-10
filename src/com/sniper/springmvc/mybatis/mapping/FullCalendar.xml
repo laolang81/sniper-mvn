@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.FullCalendar">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="start != null and start!='' ">
+			<![CDATA[startDate >= #{start}]]>
+			</if>
+			<if test="end != null and end !=''">
+				<![CDATA[and endDate <= #{end} ]]>
+			</if>
+			<if test="uid != null ">
+				and uid = #{uid}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="order">
+		<if test="order != null">
+			order by ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="FullCalendar">
+		INSERT INTO
+		mc_calendar_event
+		(id,
+		title,allDay,startDate,endDate,
+		url,className,editable,startEditable,durationEditable,redering,
+		constraints,source,color,backgroundColor,borderColor,textColor,uid)
+		VALUES(#{id},#{title},#{allDay},#{startDate},#{endDate},#{url},#{className},#{editable},#{startEditable},#{durationEditable},
+		#{redering},#{constraints},#{source},#{color},#{backgroundColor},#{borderColor},#{textColor},#{adminUser.id})
+	</insert>
+
+	<update id="update" parameterType="FullCalendar">
+		UPDATE mc_calendar_event
+		<set>
+			<if test="title != null">title=#{title},</if>
+			<if test="allDay != null">allDay=#{allDay},</if>
+			<if test="startDate != null">startDate=#{startDate},</if>
+			<if test="endDate != null">endDate=#{endDate},</if>
+			<if test="enabled != null">enabled=#{enabled},</if>
+			<if test="url != null">url=#{url},</if>
+			<if test="className != null">className=#{className},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from
+		mc_calendar_event
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="AdminGroup" parameterType="string">
+		select *
+		from
+		mc_calendar_event
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="AdminGroup" parameterType="FullCalendar">
+		select * from
+		mc_calendar_event
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="FullCalendar">
+		select * from
+		mc_calendar_event
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_calendar_event
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="FullCalendar" parameterType="map">
+		select *
+		from
+		mc_calendar_event
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdTabInfoClass">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="enabled != null ">
+				and ic_true = #{enabled}
+			</if>
+			<if test="itemid != null ">
+				and itemid = #{itemid}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdTabInfoClass">
+		INSERT INTO tab_info_class
+		(ic_name,itemid,ic_true,ic_order)
+		VALUES(#{name},#{itemid},#{enabled},#{sort})
+	</insert>
+
+	<resultMap type="SdTabInfoClass" id="map">
+		<id column="ic_id" property="id" />
+		<result column="ic_name" property="name" />
+		<result column="itemid" property="itemid" />
+		<result column="ic_true" property="enabled" />
+		<result column="ic_order" property="sort" />
+	</resultMap>
+
+	<update id="update" parameterType="SdTabInfoClass">
+		UPDATE tab_info_class
+		<set>
+			<if test="name != null">ic_name=#{name},</if>
+			<if test="itemid != null">itemid=#{itemid},</if>
+			<if test="enabled != null">ic_true=#{enabled},</if>
+			<if test="sort != null">ic_order=#{sort},</if>
+
+		</set>
+		where ic_id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from tab_info_class
+		where
+		ic_id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdTabInfoClass" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		tab_info_class
+		where ic_id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdTabInfoClass" parameterType="SdTabInfoClass"
+		resultMap="map">
+		select * from
+		tab_info_class
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		tab_info_class
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdTabInfoClass"
+		resultMap="map">
+		select * from
+		tab_info_class
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		tab_info_class
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdTabInfoClass" parameterType="map"
+		resultMap="map">
+		select * from
+		tab_info_class
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

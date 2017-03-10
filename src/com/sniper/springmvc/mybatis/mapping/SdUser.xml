@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdUser">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				u_username like #{name}
+			</if>
+			<if test="enabled != null ">
+				and u_isTrue = #{enabled}
+			</if>
+			<if test="username != null and password !=null">
+				u_username = #{username} and u_password =
+				MD5(CONCAT(#{password},u_rand)) and u_isTrue=1
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdUser">
+		INSERT INTO mc_user
+		(u_username,
+		u_fullname,u_password,u_isTrue,u_rand,u_siteid,u_audit,u_lookthrough,u_move
+		,u_read_lookthrough,isSign,u_sign,u_mobile)
+		VALUES(#{username},#{fullname},#{password},#{enbaled},#{rand},#{siteid},#{audit},#{lookthrough},#{move}
+		,#{readLookthrough},#{onSign},#{sign},#{mobile})
+	</insert>
+
+	<update id="update" parameterType="SdUser">
+		UPDATE mc_user
+		<set>
+			<if test="username != null">u_username=#{username},</if>
+			<if test="fullname != null">u_fullname=#{fullname},</if>
+			<if test="password != null">u_password=#{password},</if>
+			<if test="enbaled != null">u_isTrue=#{enbaled},</if>
+			<if test="rand != null">u_rand=#{rand},</if>
+			<if test="siteid != null">u_siteid=#{siteid},</if>
+			<if test="audit !=null">u_audit=#{audit},</if>
+			<if test="lookthrough != null">u_lookthrough=#{lookthrough},</if>
+			<if test="move !=null">u_move=#{move},</if>
+			<if test="readLookthrough !=null">u_read_lookthrough=#{readLookthrough},</if>
+			<if test="onSign !=null">isSign=#{onSign},</if>
+			<if test="sign !=null">u_sign=#{sign},</if>
+			<if test="u_mobile !=null">u_mobile=#{mobile},</if>
+		</set>
+		where u_id =#{id}
+	</update>
+	<resultMap type="SdUser" id="map">
+		<id column="u_id" property="id" />
+		<result column="u_username" property="username" />
+		<result column="u_fullname" property="fullname" />
+		<result column="u_password" property="password" />
+		<result column="u_group" property="group" />
+		<result column="u_isTrue" property="enbaled" />
+		<result column="u_rand" property="rand" />
+		<result column="u_siteid" property="siteid" />
+		<result column="u_audit" property="audit" />
+		<result column="u_lookthrough" property="lookthrough" />
+		<result column="u_move" property="move" />
+		<result column="u_read_lookthrough" property="readLookthrough" />
+		<result column="isSign" property="onSign" />
+		<result column="u_sign" property="sign" />
+
+	</resultMap>
+
+	<delete id="delete" parameterType="string">
+		delete from mc_user where
+		u_id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdUser" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		mc_user
+		where u_id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdUser" parameterType="SdUser"
+		resultMap="map">
+		select * from
+		mc_user
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_user
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdUser"
+		resultMap="map">
+		select * from
+		mc_user
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_user
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdUser" parameterType="map"
+		resultMap="map">
+		select * from
+		mc_user
+		<include refid="where" />
+	</select>
+
+</mapper>

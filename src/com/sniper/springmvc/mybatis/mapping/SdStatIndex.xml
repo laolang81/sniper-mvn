@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdStatIndex">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="url != null ">
+				name like #{name}
+			</if>
+			<if test="date != null ">
+				and date = #{date}
+			</if>
+			<if test="datetime != null ">
+				and datetime = #{datetime}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdStatIndex">
+		INSERT INTO stat_index
+		(date,url,datetime,st_ip)
+		VALUES(#{date},#{url},#{datetime},#{ip})
+	</insert>
+
+	<update id="update" parameterType="SdStatIndex">
+		UPDATE stat_index
+		<set>
+			<if test="url != null">url=#{url},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from stat_index where
+		id=#{id}
+	</delete>
+
+	<delete id="deleteByDate" parameterType="string">
+		delete from stat_index
+		where
+		<![CDATA[ date <= #{date}]]>
+	</delete>
+
+	<select id="get" resultType="SdStatIndex" parameterType="string">
+		select *
+		from
+		stat_index
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdStatIndex" parameterType="SdStatIndex">
+		select * from
+		stat_index
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		stat_index
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdStatIndex">
+		select * from
+		stat_index
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		stat_index
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdStatIndex" parameterType="map">
+		select * from
+		stat_index
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+	<!-- 插入新聞 -->
+	<insert id="saveSubjectView" parameterType="map">
+		insert into stat_item
+		(siteid,itemid,date,view)
+		select siteid, itemid, #{date}, sum(today_view) 
+		from subjects
+		where
+		itemid > 0 and
+		left(su_view_last_time,10) = #{date} group by itemid
+	</insert>
+
+</mapper>

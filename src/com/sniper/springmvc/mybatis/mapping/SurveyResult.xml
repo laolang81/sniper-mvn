@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SurveyResult">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="surveyId != null ">
+				surveyId = #{surveyId}
+			</if>
+			<if test="data_id != null ">
+				and data_id = #{data_id}
+			</if>
+			<if test="quetion != null ">
+				and quetion = #{quetion}
+			</if>
+			<if test="answers != null ">
+				and answers like #{answers}
+			</if>
+
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SurveyResult">
+		INSERT INTO mc_survey_result
+		(id,
+		surveyId,uid,num,quetion,answers,answersText,data_id)
+		VALUES(#{id},#{surveyId},#{uid},#{num},#{quetion},#{answers},#{answersText},#{resultData.id})
+	</insert>
+
+	<update id="update" parameterType="SurveyResult">
+		UPDATE mc_survey_result
+		<set>
+		
+
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_survey_result
+		where
+		id=#{id}
+	</delete>
+
+	<delete id="deleteBySurvey" parameterType="string">
+		delete from
+		mc_survey_result
+		where
+		surveyId=#{id}
+	</delete>
+
+	<select id="get" resultType="SurveyResult" parameterType="string">
+		select
+		*
+		from
+		mc_survey_result
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SurveyResult" parameterType="SurveyResult">
+		select * from
+		mc_survey_result
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_survey_result
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SurveyResult">
+		select * from
+		mc_survey_result
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_survey_result
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SurveyResult" parameterType="map">
+		select * from
+		mc_survey_result
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

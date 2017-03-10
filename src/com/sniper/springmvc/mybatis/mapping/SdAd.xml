@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdAd">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="enabled != null ">
+				ad_true = #{ad_true}
+			</if>
+			<if test="name != null ">
+				and ad_name like #{name}
+			</if>
+			<if test="address != null ">
+				and ad_address = #{address}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdAd">
+		INSERT INTO mc_ad (
+		ad_name,ad_ctime,ad_path,ad_uid,ad_address,ad_width,ad_height,ad_url,ad_stime,ad_etime
+		,ad_note,ad_order,ad_type,ad_true)
+		VALUES(
+		#{name},#{ctime},#{path},#{uid},#{address},#{width},#{height},#{url},#{stime},#{etime},#{note},#{order},#{type},#{enabled})
+	</insert>
+
+	<update id="update" parameterType="SdAd">
+		UPDATE mc_ad
+		<set>
+			<if test="name != null">ad_name=#{name},</if>
+			<if test="path != null">ad_path=#{path},</if>
+			<if test="address != null">ad_address=#{address},</if>
+			<if test="width != null">ad_width=#{width},</if>
+			<if test="height != null">ad_height=#{height},</if>
+			<if test="url != null">ad_url=#{url},</if>
+			<if test="stime !=null">ad_stime=#{stime},</if>
+			<if test="etime != null">ad_etime=#{etime},</if>
+			<if test="note !=null">ad_note=#{note},</if>
+			<if test="order !=null">ad_order=#{order},</if>
+			<if test="type !=null">ad_type=#{type},</if>
+			<if test="enabled !=null">ad_true=#{enabled},</if>
+		</set>
+		where ad_id =#{id}
+	</update>
+
+	<resultMap type="SdAd" id="map">
+		<id column="ad_id" property="id" />
+		<result column="ad_name" property="name" />
+		<result column="ad_path" property="path" />
+		<result column="ad_address" property="address" />
+		<result column="ad_width" property="width" />
+		<result column="ad_height" property="height" />
+		<result column="ad_url" property="url" />
+		<result column="ad_stime" property="stime" />
+		<result column="ad_etime" property="etime" />
+		<result column="ad_note" property="note" />
+		<result column="ad_order" property="order" />
+		<result column="ad_type" property="type" />
+		<result column="ad_true" property="enabled" />
+	</resultMap>
+
+	<delete id="delete" parameterType="string">
+		delete from mc_ad where
+		ad_id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdAd" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		mc_ad
+		where ad_id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdAd" parameterType="SdAd"
+		resultMap="map">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdAd"
+		resultMap="map">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_ad
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdAd" parameterType="map"
+		resultMap="map">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

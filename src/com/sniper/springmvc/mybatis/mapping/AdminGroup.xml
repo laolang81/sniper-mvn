@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.AdminGroup">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="order">
+		<if test="order != null">
+			order by ${order}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="AdminGroup">
+		INSERT INTO mc_admin_group
+		(id,
+		name,note,value,ctime,audit,lookthrough,move,readLookthrough,startlookthrough)
+		VALUES(#{id},#{name},#{note},#{value},#{ctime},#{audit},#{lookthrough},#{move},#{readLookthrough},#{startlookthrough})
+	</insert>
+
+	<update id="update" parameterType="AdminGroup">
+		UPDATE mc_admin_group
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="note != null">note=#{note},</if>
+			<if test="value != null">value=#{value},</if>
+			<if test="audit != null">audit=#{audit},</if>
+			<if test="lookthrough != null">lookthrough=#{lookthrough},</if>
+			<if test="move != null">move=#{move},</if>
+			<if test="readLookthrough != null">readLookthrough=#{readLookthrough},</if>
+			<if test="startlookthrough != null">startlookthrough=#{startlookthrough},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_admin_group
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="AdminGroup" parameterType="string"
+		resultMap="getMap">
+		select *, r.name as rname
+		from
+		mc_admin_group g
+		left join mc_admin_group_right
+		gr on g.id = gr.group_id
+		left join mc_admin_right r on gr.right_id=r.id
+		where g.id =
+		#{id}
+	</select>
+
+	<resultMap type="AdminGroup" id="getMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="value" column="value" />
+		<result property="note" column="note" />
+		<result property="ctime" column="ctime" />
+		<result property="audit" column="audit" />
+		<result property="lookthrough" column="lookthrough" />
+		<result property="move" column="move" />
+		<result property="readLookthrough" column="readLookthrough" />
+		<result property="startlookthrough" column="startlookthrough" />
+		<collection property="adminRight" ofType="AdminRight">
+			<id property="id" column="right_id" />
+			<result property="name" column="rname" />
+			<result property="url" column="url" />
+			<result property="fid" column="fid" />
+			<result property="sort" column="sort" />
+			<result property="permission" column="permission" />
+		</collection>
+	</resultMap>
+
+	<select id="select" resultType="AdminGroup" parameterType="AdminGroup">
+		select * from
+		mc_admin_group
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+
+	<select id="page" parameterType="map" resultType="AdminGroup">
+		select * from
+		mc_admin_group
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_admin_group
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="AdminGroup" parameterType="map">
+		select *
+		from
+		mc_admin_group
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="getOne" resultType="AdminGroup" parameterType="map"
+		resultMap="getOneMap">
+		select *
+		from
+		mc_admin_group
+		where id = #{id}
+	</select>
+
+	<resultMap type="AdminGroup" id="getOneMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="note" column="note" />
+		<result property="value" column="value" />
+	</resultMap>
+
+</mapper>

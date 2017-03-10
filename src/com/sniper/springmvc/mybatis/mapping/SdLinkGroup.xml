@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdLinkGroup">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				lt_name like #{name}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdLinkGroup">
+		INSERT INTO mc_link_type (
+		lt_name,lt_order,lt_uid,lt_note)
+		VALUES(#{name},#{order},#{uid},#{note})
+	</insert>
+
+	<update id="update" parameterType="SdLinkGroup">
+		UPDATE mc_link_type
+		<set>
+			<if test="name != null">lt_name=#{name},</if>
+			<if test="order != null">lt_order=#{order},</if>
+			<if test="uid != null">lt_uid=#{uid},</if>
+			<if test="note != null">lt_note=#{note},</if>
+		</set>
+		where lt_id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_link_type where
+		lt_id=#{id}
+	</delete>
+
+	<resultMap type="SdLinkGroup" id="map">
+		<id column="lt_id" property="id" />
+		<result column="lt_name" property="name" />
+		<result column="lt_order" property="order" />
+		<result column="lt_uid" property="uid" />
+		<result column="lt_note" property="note" />
+	</resultMap>
+
+	<select id="get" resultType="SdLinkGroup" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		mc_link_type
+		where lt_id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdLinkGroup" parameterType="SdLinkGroup"
+		resultMap="map">
+		select * from
+		mc_link_type
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_link_type
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdLinkGroup"
+		resultMap="map">
+		select * from
+		mc_link_type
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_link_type
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdLinkGroup" parameterType="map"
+		resultMap="map">
+		select * from
+		mc_link_type
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

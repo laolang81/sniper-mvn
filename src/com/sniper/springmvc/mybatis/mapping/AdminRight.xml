@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.AdminRight">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="url != null ">
+				and url like #{url}
+			</if>
+			<if test="fid != null ">
+				and fid = #{fid}
+			</if>
+			<if test="menu != null ">
+				and theMenu = #{menu}
+			</if>
+			<if test="show != null ">
+				and theShow = #{show}
+			</if>
+			<if test="type != null ">
+				and type = #{type}
+			</if>
+			<if test="permission != null ">
+				and permission like #{permission}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="order">
+		<if test="order != null">
+			order by ${order}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="AdminRight">
+		INSERT INTO mc_admin_right
+		(id,
+		name,url,note,ctime,thePublic,theMenu,theShow,sort,fid,target,permission,icon,
+		type)
+		VALUES(#{id},#{name},#{url},#{note},#{ctime},#{thePublic},#{theMenu},#{theShow},#{sort},#{fid},#{target},#{permission},#{icon},#{type})
+	</insert>
+
+	<update id="update" parameterType="AdminRight">
+		UPDATE mc_admin_right
+		<set>
+			<if test="name != null">name=#{name},</if>
+			url=#{url},
+			note=#{note},
+			<if test="thePublic != null">thePublic=#{thePublic},</if>
+			<if test="theMenu != null">theMenu=#{theMenu},</if>
+			<if test="theShow != null">theShow=#{theShow},</if>
+			sort=#{sort},
+			fid=#{fid},
+			<if test="target != null">target=#{target},</if>
+			permission=#{permission},
+			icon=#{icon},
+			<if test="type != null">type=#{type}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_admin_right
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="AdminRight" parameterType="string">
+		select *
+		from
+		mc_admin_right
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="AdminRight" parameterType="AdminRight">
+		select * from
+		mc_admin_right
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="AdminRight">
+		select * from
+		mc_admin_right
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_admin_right
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="AdminRight" parameterType="map">
+		select *
+		from
+		mc_admin_right
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+
+
+</mapper>

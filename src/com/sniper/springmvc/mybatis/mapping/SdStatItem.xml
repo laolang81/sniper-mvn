@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdStatItem">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="siteid != null ">
+				and siteid = #{siteid}
+			</if>
+			<if test="itemid != null ">
+				and itemid = #{itemid}
+			</if>
+
+			<if test="date != null ">
+				and date = #{date}
+			</if>
+
+		</where>
+	</sql>
+	<insert id="insert" parameterType="SdStatItem" useGeneratedKeys="true"
+		keyProperty="statid">
+		INSERT INTO stat_item (siteid,
+		itemid,date,post,view)
+		VALUES
+		(#{siteid},#{itemid},#{date},#{post},#{view})
+	</insert>
+
+	<update id="update" parameterType="SdStatItem">
+		UPDATE stat_item
+		<set>
+			<if test="siteid != null">siteid=#{siteid},</if>
+			<if test="itemid != null">itemid=#{itemid},</if>
+			<if test="date != null">date=#{date},</if>
+			<if test="post !=null">post=#{post},</if>
+			<if test="view != null">view=#{view},</if>
+
+		</set>
+		where statid =#{statid}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from stat_item where
+		statid=#{statid}
+	</delete>
+
+	<select id="get" resultType="SdStatItem" parameterType="string">
+		select *
+		from
+		stat_item
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdStatItem" parameterType="SdStatItem">
+		select * from
+		stat_item
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		stat_item
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdStatItem">
+		select * from
+		stat_item
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		stat_item
+		<include refid="where" />
+
+	</select>
+
+	<select id="find" resultType="SdStatItem" parameterType="map">
+		select * from
+		stat_item
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<update id="subjectView">
+		insert into stat_item (siteid,itemid,date,view)
+		select siteid, itemid ,#{date} sum(today_view) from
+		subjects
+		where
+		itemid > 0 and left(su_view_last_time,10)=#{date} group by
+		itemid
+	</update>
+
+</mapper>

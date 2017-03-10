@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Mail">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="subject != null ">
+				subject like #{name}
+			</if>
+			<if test="send != null ">
+				and send = #{send}
+			</if>
+			<if test="mailFrom != null ">
+				and mailFrom like #{mailFrom}
+			</if>
+			<if test="mailTo != null ">
+				and mailTo like #{mailTo}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="Mail">
+		INSERT INTO mc_mail (id,
+		subject,content,mailFrom,mailTo,mailCc,mailBcc,mimeMessage,send,errorMessage,sendTime)
+		VALUES(#{id},#{subject},#{content},#{mailFrom},#{mailTo},#{mailCc},#{mailBcc},#{mimeMessage},#{send},#{errorMessage},#{sendTime})
+	</insert>
+
+	<update id="update" parameterType="Mail">
+		UPDATE mc_mail
+		<set>
+			<if test="send != null">send=#{send},</if>
+			<if test="errorMessage != null">errorMessage=#{errorMessage},</if>
+			<if test="sendTime != null">sendTime=#{sendTime}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_mail where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="Mail" parameterType="string"
+		resultMap="getMap">
+		select *
+		from
+		mc_mail m
+		left join mc_mail_files mf on m.id =
+		mf.mail_id
+		left join mc_files f on mf.file_id=f.id
+		where id =
+		#{id}
+	</select>
+
+	<resultMap type="Files" id="getMap">
+		<id property="id" column="id" />
+		<result property="subject" column="subject" />
+		<result property="content" column="content" />
+		<result property="mailFrom" column="mailFrom" />
+		<result property="mailTo" column="mailTo" />
+		<result property="mailCc" column="mailCc" />
+		<result property="mailBcc" column="mailBcc" />
+		<result property="mimeMessage" column="mimeMessage" />
+		<result property="send" column="send" />
+		<result property="errorMessage" column="errorMessage" />
+		<result property="sendTime" column="sendTime" />
+		<collection property="files" javaType="Files">
+			<id column="file_id" property="id" />
+			<result property="newPath" column="newPath" />
+			<result property="sourcePath" column="sourcePath" />
+			<result property="oldName" column="oldName" />
+			<result property="hash" column="hash" />
+			<result property="stime" column="stime" />
+			<result property="download" column="download" />
+			<result property="size" column="size" />
+		</collection>
+	</resultMap>
+
+	<select id="select" resultType="Mail" parameterType="Mail">
+		select * from
+		mc_mail
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_mail
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="Mail">
+		select * from
+		mc_mail
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_mail
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="Mail" parameterType="map">
+		select * from
+		mc_mail
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

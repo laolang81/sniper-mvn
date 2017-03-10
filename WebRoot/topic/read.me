@@ -1,0 +1,30 @@
+新闻读取接口
+
+图片新闻读取接口，不读取内容，参数: 处室id(int)、非必须，栏目id(int)、非必须，数量，返回值List<SdViewSubject>
+<#assign slides = subjectUtil.getSlice(null,null,10)>
+<#list slides as s>
+${s}
+</#list>
+
+新闻读取，如果有附件会一并读取，参数: 处室id(int)、非必须，栏目id(int)、非必须，数量，返回值List<SdViewSubject>
+<#assign slides = subjectUtil.getSubjects(null,null,10)>
+<#list slides as s>
+${s}
+</#list> 
+
+新闻读取，如果有附件会一并读取，参数： 聚合栏目id(string)必须，数量，返回值List<SdViewSubject>
+<#assign slides = subjectUtil.getSubjectsByPage(1, 10)>
+<#list slides as s>
+${s}
+</#list> 
+
+把一个时间戳转成字符串时间,参数int时间戳，返回值时间字符串yyyy-MM-dd
+${subjectUtil.timeMillisToString(1111111111)}
+
+获取新闻除域名部分url,参数 SdViewSubject ,返回值 string,url
+
+<#assign url = subjectUtil.subjectUrl(s);
+
+获取新闻内容,参数 新闻id(string)，返回值 Map<String, Object> map,包含新闻内容，栏目，处室
+
+<#assign subject = subjectUtil.getSubject("11")>

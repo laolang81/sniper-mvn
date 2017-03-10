@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Lottery">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="date != null ">
+				g.date = #{date}
+			</if>
+			<if test="num != null ">
+				and g.num = #{num}
+			</if>
+			<if test="type != null ">
+				and g.type = #{type}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="order">
+		<if test="order != null">
+			order by ${order}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="Lottery">
+		INSERT INTO mc_lottery
+		(id,date,ctime,num,type
+		,numOne,numTwo,numThree,numFour,numFive,numSix,numSeven)
+		VALUES(#{id},#{date},#{ctime,jdbcType = TIMESTAMP},#{num},#{type}
+		,#{numOne},#{numTwo},#{numThree},#{numFour},#{numFive},#{numSix},#{numSeven})
+	</insert>
+
+	<update id="update" parameterType="Lottery">
+		UPDATE mc_lottery
+		<set>
+			<if test="date != null">date=#{date},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_lottery
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="Lottery" parameterType="string"
+		resultMap="getMap">
+		select * from mc_lottery g
+		where g.id = #{id}
+	</select>
+
+	<resultMap type="Lottery" id="getMap">
+		<id property="id" column="id" />
+		<result property="date" column="date" />
+		<result property="ctime" column="ctime" javaType="java.sql.Timestamp" />
+		<result property="num" column="num" />
+		<result property="numOne" column="numOne" />
+		<result property="numTwo" column="numTwo" />
+		<result property="numThree" column="numThree" />
+		<result property="numFour" column="numFour" />
+		<result property="numFive" column="numFive" />
+		<result property="numSix" column="numSix" />
+		<result property="numSeven" column="numSeven" />
+		<result property="type" column="type" />
+
+	</resultMap>
+
+	<select id="select" resultType="Lottery" parameterType="Lottery"
+		resultMap="getMap">
+		select * from mc_lottery g
+		<include refid="where" />
+		<include refid="order" />
+		<if test="pageSize != null">
+			limit #{pageSize}
+		</if>
+	</select>
+
+
+	<select id="page" parameterType="map" resultType="Lottery"
+		resultMap="getMap">
+		select * from mc_lottery g
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select * from mc_lottery g
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="Lottery" parameterType="map"
+		resultMap="getMap">
+		select * from mc_lottery g
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+
+
+
+</mapper>

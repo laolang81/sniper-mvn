@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdUserConnect">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="uname != null ">
+				uname = #{uname}
+			</if>
+			<if test="sourceid != null ">
+				and sourceid = #{sourceid}
+			</if>
+			<if test="typeId != null ">
+				and typeId = #{typeId}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdUserConnect">
+		INSERT INTO mc_user_connect
+		(uid,ctime,uname,dname,sourceid,depid)
+		VALUES
+		(#{uid},#{ctime},#{uname},#{dname},#{sourceid},#{depid})
+	</insert>
+
+	<update id="update" parameterType="SdUserConnect">
+		UPDATE mc_user_connect
+		<set>
+			<if test="uid != null">uid=#{uid},</if>
+			<if test="uname != null">uname=#{uname},</if>
+			<if test="dname != null">dname=#{dname},</if>
+			<if test="sourceid != null">sourceid=#{sourceid},</if>
+			<if test="depid != null">depid=#{depid},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_user_connect
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdUserConnect" parameterType="string">
+		select *
+		from
+		mc_user_connect
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdUserConnect" parameterType="SdUserConnect">
+		select * from
+		mc_user_connect
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_user_connect
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdUserConnect">
+		select * from
+		mc_user_connect
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_user_connect
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdUserConnect" parameterType="map">
+		select * from
+		mc_user_connect
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

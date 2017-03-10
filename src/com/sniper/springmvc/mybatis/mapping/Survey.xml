@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Survey">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="title != null ">
+				title like #{title}
+			</if>
+			<if test="locked != null ">
+				and locked = #{locked}
+			</if>
+			<if test="uid != null ">
+				and uid = #{uid}
+			</if>
+
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="Survey">
+		INSERT INTO mc_survey 
+		(id,title,cTime,peopleNum,peopleMaxNum,locked,password,page,template,note,submitName,
+		listStyle,uid,startDate,entDate,multi,multiNum,verifyCode,verifyIpNum,verifyPhone,openResult)
+		VALUES(#{id},#{title},#{cTime},#{peopleNum},#{peopleMaxNum},#{locked},#{password},#{page},#{template},#{note},#{submitName},
+		#{listStyle},#{adminUser.id},#{startDate},#{entDate},#{multi},#{multiNum},#{verifyCode},#{verifyIpNum},#{verifyPhone},#{openResult})
+	</insert>
+
+	<update id="update" parameterType="Survey">
+		UPDATE mc_survey
+		<set>
+			<if test="title != null">title=#{title},</if>
+			<if test="peopleNum != null">peopleNum=#{peopleNum},</if>
+			<if test="peopleMaxNum != null">peopleMaxNum=#{peopleMaxNum},</if>
+			<if test="locked != null">locked=#{locked},</if>
+			<if test="password != null">password=#{password},</if>
+			<if test="page != null">page=#{page},</if>
+			<if test="template != null">template=#{template},</if>
+			<if test="note != null">note=#{note},</if>
+			<if test="submitName != null">submitName=#{submitName},</if>
+			<if test="listStyle != null">listStyle=#{listStyle},</if>
+			<if test="startDate != null">startDate=#{startDate},</if>
+			<if test="entDate != null">entDate=#{entDate},</if>
+			<if test="multi != null">multi=#{multi},</if>
+			<if test="multiNum != null">multiNum=#{multiNum},</if>
+			<if test="verifyCode != null">verifyCode=#{verifyCode},</if>
+			<if test="verifyIpNum != null">verifyIpNum=#{verifyIpNum},</if>
+			<if test="verifyPhone != null">verifyPhone=#{verifyPhone}</if>
+			<if test="openResult != null">openResult=#{openResult}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_survey where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="Survey" parameterType="string">
+		select *
+		from
+		mc_survey
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="Survey" parameterType="Survey">
+		select * from
+		mc_survey
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_survey
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="Survey">
+		select * from
+		mc_survey
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_survey
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="Survey" parameterType="map">
+		select * from
+		mc_survey
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

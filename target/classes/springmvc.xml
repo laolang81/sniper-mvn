@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<beans:description>Spring MVC Configuration</beans:description>
+	<!-- 可以世界在java中使用里面的数据，EL -->
+	<context:property-placeholder
+		local-override="true" ignore-unresolvable="true"
+		location="classpath*:/properties/sniper.properties" />
+
+	<!--需要进行 spring整合springmvc么 还是需要加入spring的ioc容器 是否需要在web.xml中配置springioc容器的ContextLoaderListener 
+		1.需要:通常情况下,类似于数据源,事务,整合其他框架都是放在spring配置文件中(而不是放在springmv里面) 2.不需要都放在springmvc的配置文件中,也可以分多个Spring 
+		的配置文件然后import 节点导入其他的配置文件 实际上 -->
+	<context:component-scan base-package="com.sniper.springmvc.action.*">
+	</context:component-scan>
+
+	<!-- 配置 freemarker解析器 -->
+	<!-- http://www.osblog.net/wangxp/140.html -->
+	<beans:bean id="freeMarkerViewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<beans:property name="viewClass"
+			value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
+		<beans:property name="suffix" value="" />
+		<beans:property name="viewNames" value="*.ftl" />
+		<beans:property name="prefix" value="" />
+		<beans:property name="cache" value="false" />
+		<beans:property name="contentType" value="text/html;charset=UTF-8" />
+		<beans:property name="exposeRequestAttributes" value="true" />
+		<beans:property name="exposeSessionAttributes" value="true" />
+		<beans:property name="exposeSpringMacroHelpers" value="true" />
+		<!-- 此变量值为pageContext.request, 页面使用方法：base.contextPath -->
+		<beans:property name="requestContextAttribute" value="base" />
+		<beans:property name="order" value="0" />
+	</beans:bean>
+
+	<beans:bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+
+	<beans:bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<beans:property name="templateLoaderPath" value="/WEB-INF/modules/themes/" />
+		<beans:property name="defaultEncoding" value="UTF-8" />
+		<beans:property name="freemarkerVariables">
+			<beans:map>
+				<beans:entry key="xml_escape" value-ref="fmXmlEscape" />
+			</beans:map>
+		</beans:property>
+		<beans:property name="freemarkerSettings">
+			<beans:props>
+				<beans:prop key="tag_syntax">auto_detect</beans:prop>
+				<beans:prop key="template_update_delay">5</beans:prop>
+				<beans:prop key="defaultEncoding">UTF-8</beans:prop>
+				<beans:prop key="url_escaping_charset">UTF-8</beans:prop>
+				<beans:prop key="locale">zh_CN</beans:prop>
+				<beans:prop key="boolean_format">true,false</beans:prop>
+				<beans:prop key="datetime_format">yyyy-MM-dd HH:mm:ss</beans:prop>
+				<beans:prop key="date_format">yyyy-MM-dd</beans:prop>
+				<beans:prop key="time_format">HH:mm:ss</beans:prop>
+				<beans:prop key="number_format">0.######</beans:prop>
+				<beans:prop key="whitespace_stripping">true</beans:prop>
+				<!--空值处理<beans:prop key="classic_compatible">true</beans:prop> -->
+				<!-- <beans:prop key="auto_import">/ftl/tags/index.ftl as p,/ftl/spring.ftl 
+					as s</prop> -->
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+
+	<!-- 配置 jsp 试图解析器 -->
+	<!-- http://www.cnblogs.com/huligong1234/p/3515747.html -->
+
+	<!--配置试图 beanNameViewResolver解析器 ,使用试图的名字来解析试图 -->
+	<!-- 通过order来设置 试图解析器的优先级,只要配置都会被默认的小 -->
+	<beans:bean id="beanNameViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<!-- <beans:property name="order" value="100" /> -->
+	</beans:bean>
+
+	<beans:bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/modules/themes/" />
+		<beans:property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+	</beans:bean>
+
+	<beans:bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<beans:property name="cookieName" value="clientlanguage" />
+		<beans:property name="cookieMaxAge" value="-1" />
+	</beans:bean>
+
+	<!-- id 必须是 messageSource否则出错 -->
+	<!-- 使用jstl 资源国际化的设置 -->
+	<beans:bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<beans:property name="basename" value="i18n" />
+	</beans:bean>
+
+	<!-- 配置直接转发的页面 -->
+	<!-- 直接响应转发的页面不经过handler的方法 ,如果不加上下面的配置以前的 url都会失效 -->
+	<mvc:view-controller path="/success" view-name="success" />
+
+	<!-- 取消对静态资源的解释,这样可以直接访问静态资源,这里判断访问资源是否被映射过 -->
+	<!-- 这样不会出现找不到匹配资源的情况 -->
+	<mvc:default-servlet-handler />
+	<!-- 静态文件映射 -->
+	<mvc:resources location="/myfiles/" mapping="/myfiles/**" />
+
+	<!-- 在实际开发中都通常需要配置 mvc:annotion-driven 标签 -->
+	<!-- 加上这个配置就不会除了mvc之外的url都不能使用 -->
+	<!-- 作用有很多会住测三个bean 支持实例对表单参数类型转换 支持很多类型注解数据类型的格式化 -->
+	<!-- <mvc:annotation-driven /> -->
+	<!-- 下面的写法可以使用自定义转换器,自定义类型转换器和系统类型转换器一起使用 -->
+
+	<mvc:annotation-driven conversion-service="conversionService">
+		<!-- 解决uploadify ie上传302的错误 -->
+		<mvc:message-converters register-defaults="true">
+			<beans:bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<beans:property name="prefixJson" value="false" />
+				<beans:property name="supportedMediaTypes">
+					<beans:list>
+						<beans:value>application/json</beans:value>
+						<beans:value>text/json</beans:value>
+						<!-- 上面已经可以解决,下面是其他头部 -->
+						<!-- <beans:value>text/*</beans:value> <beans:value>text/plain</beans:value> 
+							<beans:value>*/*</beans:value> -->
+					</beans:list>
+				</beans:property>
+			</beans:bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	<!-- 配置 conversionService -->
+	<!-- org.springframework.context.support.ConversionServiceFactoryBean -->
+	<beans:bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<beans:property name="converters">
+			<beans:set>
+				<!-- 使用 @Component注册 用spring扫描 -->
+				<beans:ref bean="groupAddRightConverter" />
+				<beans:ref bean="postAddFilesConverter" />
+				<beans:ref bean="postAddChannelsConverter" />
+				<beans:ref bean="groupAddUserConverter" />
+			</beans:set>
+		</beans:property>
+	</beans:bean>
+
+
+	<!-- 配置 SessionLocaleResolver -->
+	<beans:bean id="localResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+	<!-- 下面的拦截器可以指定url开始的 -->
+	<!-- 配置链接修改语言环境的 拦截器 org.springframework.web.servlet.i18n.LocaleChangeInterceptor -->
+	<mvc:interceptors>
+		<!-- 配置自定义拦截器,controller的使用时间 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<!-- 排除 -->
+			<mvc:exclude-mapping path="/myfiles/**" />
+			<mvc:exclude-mapping path="/verify**" />
+			<mvc:exclude-mapping path="/attachments/**" />
+			<beans:bean class="com.sniper.springmvc.interceptions.RunTimeInterceptor" />
+			<!-- 链接改变语言环境的session拦截器 -->
+		</mvc:interceptor>
+
+
+	</mvc:interceptors>
+	<!-- 上传文件配置 -->
+	<beans:bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="defaultEncoding" value="UTF-8" />
+		<beans:property name="maxUploadSize" value="1048576000" />
+	</beans:bean>
+
+	<!-- 配置错误处理页面 -->
+	<!-- 通过 SimpleMappingExceptionResolver处理错误页面 -->
+
+	<beans:bean
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<!-- 更改试图中exception的名称 -->
+		<beans:property name="exceptionAttribute" value="ex" />
+		<beans:property name="exceptionMappings">
+			<beans:props>
+				<beans:prop key="java.lang.ArrayIndexOutOfRoundsException">/error/error.jsp</beans:prop>
+				<!-- <beans:prop key="java.lang.Throwable">/error/500.jsp</beans:prop> -->
+				<!-- <beans:prop key="org.apache.shiro.authz.AuthorizationException">/error/UnAccess</beans:prop> -->
+				<beans:prop key="org.springframework.web.multipart.MultipartException">/error/error.jsp</beans:prop>
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+
+	<!--下面是针对shrio权限控制必须设置的，@RequiresPermissions("admin:user:view")不设置他们不管用 -->
+	<aop:config proxy-target-class="true" />
+	<beans:bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<beans:property name="securityManager" ref="securityManager" />
+	</beans:bean>
+
+</beans:beans>

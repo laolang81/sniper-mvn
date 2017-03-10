@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Topic">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="enabled != null ">
+				and enabled = #{enabled}
+			</if>
+			
+			<if test="url != null ">
+				and url = #{url}
+			</if>
+			
+		</where>
+	</sql>
+	<insert id="insert" parameterType="Topic">
+		INSERT INTO mc_topic
+		(id,name,keywords,description,stime,url,content, enabled,template)
+		VALUES
+		(#{id},#{name},#{keywords},#{description},#{stime},#{url},#{content},#{enabled},#{template})
+	</insert>
+
+	<update id="update" parameterType="Topic">
+		UPDATE mc_topic
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="keywords != null">keywords=#{keywords},</if>
+			<if test="description != null">description=#{description},</if>
+			<if test="url != null">url=#{url},</if>
+			<if test="content != null">content=#{content},</if>
+			<if test="content != null">enabled=#{enabled},</if>
+			<if test="content !=null">template=#{template},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_topic where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="Topic" parameterType="string">
+		select *
+		from
+		mc_topic
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="Topic" parameterType="Topic">
+		select * from
+		mc_topic
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_topic
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="Topic">
+		select * from
+		mc_topic
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_topic
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="Topic" parameterType="map">
+		select * from
+		mc_topic
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

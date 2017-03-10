@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>山东省政府购买信息管理平台</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+<script src="script/jquery-1.12.2.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		function docu_size(){
+		var login_height = $(document).height();
+		$(".login_box").height(login_height)
+		$(".login_box h2").css("margin-top",login_height/4);
+		};
+		docu_size()
+		$(window).resize(function(){
+		  docu_size()
+		});
+	});
+</script>
+</head>
+
+<body>
+<div class="login_box">
+	<h2><img src="images/logo2.png" width="917" height="118" alt=""/></h2>
+    <ul>
+    	<li><a href="index.html"><img src="images/xiangmu_ico.png" width="163" height="181" alt=""/></a></li>
+    	<li><a href="#"><img src="images/zhengce_ico.png" width="127" height="163" alt=""/></a></li>
+    	<li><a href="#"><img src="images/liucheng_ico.png" width="127" height="163" alt=""/></a></li>
+    </ul>
+</div>
+</body>
+</html>

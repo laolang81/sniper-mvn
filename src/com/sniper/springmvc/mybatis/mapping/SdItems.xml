@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdItems">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				t.name like #{name}
+			</if>
+			<if test="deprtid != null ">
+				and t.deprtid = #{deprtid}
+			</if>
+			<if test="deps != null and deps.size() gt 0 ">
+				and t.deprtid in
+				<foreach collection="deps" index="index" item="l" separator=","
+					open="(" close=")">
+					#{l}
+				</foreach>
+			</if>
+
+			<if test="itemup != null ">
+				and t.itemup = #{itemup}
+			</if>
+			<if test="enabled != null ">
+				and t.status = #{enabled}
+			</if>
+			<if test="style != null ">
+				and t.style = #{style}
+			</if>
+			<if test="type != null ">
+				and t.type = #{type}
+			</if>
+			<if test="pro != null ">
+				and ${pro}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdItems" useGeneratedKeys="true"
+		keyProperty="itemid">
+		INSERT INTO items
+		(itemup,type,deprtid,name,fullname,status,displayorder,subjectnum
+		,description,pro1,pro2,pro3,pro4,pro5,pro6,blink,link_url,link_img
+		,style,hasmore)
+		VALUES(#{itemup},#{type},#{deprtid},#{name},#{fullname},#{status},#{displayorder},#{subjectnum}
+		,#{description},#{pro1},#{pro2},#{pro3},#{pro4},#{pro5},#{pro6},#{blink},#{linkUrl},#{linkImg}
+		,#{style},#{hasmore})
+	</insert>
+
+	<update id="update" parameterType="SdItems">
+		UPDATE items
+		<set>
+			<if test="itemup != null">itemup=#{itemup},</if>
+			<if test="type != null">type=#{type},</if>
+			<if test="deprtid != null">deprtid=#{deprtid},</if>
+			<if test="name != null">name=#{name},</if>
+			<if test="fullname != null">fullname=#{fullname},</if>
+			<if test="status != null">status=#{status},</if>
+			<if test="displayorder !=null">displayorder=#{displayorder},</if>
+			<if test="subjectnum != null">subjectnum=#{subjectnum},</if>
+			<if test="description != null">description=#{description},</if>
+			<if test="pro1 != null">pro1=#{pro1},</if>
+			<if test="pro2 != null">pro2=#{pro2},</if>
+			<if test="pro3 != null">pro3=#{pro3},</if>
+			<if test="pro4 != null">pro4=#{pro4},</if>
+			<if test="pro5 != null">pro5=#{pro5},</if>
+			<if test="pro6 !=null">pro6=#{pro6},</if>
+			<if test="blink !=null">blink=#{blink},</if>
+			<if test="linkUrl !=null">link_url=#{linkUrl},</if>
+			<if test="linkImg !=null">link_img=#{linkImg},</if>
+			<if test="hasmore !=null">hasmore=#{hasmore},</if>
+		</set>
+		where itemid =#{itemid}
+	</update>
+	<resultMap type="SdItems" id="resultMap">
+		<id column="itemid" property="itemid" />
+		<result column="itemup" property="itemup" />
+		<result column="type" property="type" />
+		<result column="deprtid" property="deprtid" />
+		<result column="name" property="name" />
+		<result column="fullname" property="fullname" />
+		<result column="status" property="status" />
+		<result column="displayorder" property="displayorder" />
+		<result column="subjectnum" property="subjectnum" />
+		<result column="description" property="description" />
+		<result column="pro1" property="pro1" />
+		<result column="pro2" property="pro2" />
+		<result column="pro3" property="pro3" />
+		<result column="pro4" property="pro4" />
+		<result column="pro5" property="pro5" />
+		<result column="pro6" property="pro6" />
+		<result column="blink" property="blink" />
+		<result column="link_url" property="linkUrl" />
+		<result column="link_img" property="linkImg" />
+		<result column="hasmore" property="hasmore" />
+		<!-- 这里不全写了，通过程序覆盖 -->
+		<association property="departments" javaType="SdDepartments">
+			<id column="deprtid" property="id" />
+			<result column="name" property="name" />
+			<result column="de_short_name" property="deShortName" />
+			<result column="dtype" property="type" />
+			<result column="banner" property="banner" />
+			<result column="bshowimgnews" property="bshowimgnews" />
+			<result column="ex_url" property="exUrl" />
+			<result column="de_true" property="deTrue" />
+			<result column="de_home" property="deHome" />
+			<result column="de_order" property="deOrder" />
+			<result column="de_ctime" property="ctime" />
+		</association>
+	</resultMap>
+
+	<resultMap type="SdItems" id="itemMap">
+		<id column="itemid" property="itemid" />
+		<result column="itemup" property="itemup" />
+		<result column="type" property="type" />
+		<result column="deprtid" property="deprtid" />
+		<result column="name" property="name" />
+		<result column="fullname" property="fullname" />
+		<result column="status" property="status" />
+		<result column="displayorder" property="displayorder" />
+		<result column="subjectnum" property="subjectnum" />
+		<result column="description" property="description" />
+		<result column="pro1" property="pro1" />
+		<result column="pro2" property="pro2" />
+		<result column="pro3" property="pro3" />
+		<result column="pro4" property="pro4" />
+		<result column="pro5" property="pro5" />
+		<result column="pro6" property="pro6" />
+		<result column="blink" property="blink" />
+		<result column="link_url" property="linkUrl" />
+		<result column="link_img" property="linkImg" />
+		<result column="hasmore" property="hasmore" />
+
+	</resultMap>
+
+
+	<delete id="delete" parameterType="string">
+		delete from items where
+		itemid=#{itemid}
+	</delete>
+
+	<select id="get" resultType="SdItems" parameterType="string"
+		resultMap="resultMap">
+		select *,d.type as dtype
+		from
+		items as t
+		left join departments
+		as d
+		on t.deprtid
+		= d.id
+		where t.itemid =
+		#{itemid}
+	</select>
+
+	<select id="getItem" resultType="SdItems" parameterType="string"
+		resultMap="itemMap">
+		select *
+		from
+		items as t
+		where t.itemid =
+		#{itemid}
+	</select>
+
+	<select id="select" resultType="SdItems" parameterType="map"
+		resultMap="resultMap">
+		select *,d.type as dtype from
+		items as t
+		left join departments as d
+		on
+		t.deprtid = d.id
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select *,d.type as dtype from
+		items as t
+		left join departments as d
+		on
+		t.deprtid = d.id
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdItems"
+		resultMap="resultMap">
+		select *,d.type as dtype from
+		items as t
+		left join departments as d
+		on
+		t.deprtid = d.id
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		items as t
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdItems" parameterType="map"
+		resultMap="resultMap">
+		select *,d.type as dtype from
+		items as t
+		left join departments as d
+		on
+		t.deprtid = d.id
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

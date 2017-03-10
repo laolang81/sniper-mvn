@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Log">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+		</where>
+	</sql>
+
+	<update id="createTable" parameterType="map">
+		${sql}
+	</update>
+
+	<insert id="insert" parameterType="Log">
+		INSERT INTO
+		mc_#{tableName}_log
+		(id,
+		name,note,value,ctime)
+		VALUES(#{id},#{name},#{note},#{value},#{ctime})
+	</insert>
+
+	<update id="update" parameterType="Log">
+		UPDATE mc_#{tableName}_log
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="note != null">note=#{note},</if>
+			<if test="value != null">value=#{value}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from
+		mc_#{tableName}_log
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="AdminGroup" parameterType="string">
+		select *
+		from
+		mc_#{tableName}_log
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="AdminGroup" parameterType="Log">
+		select * from
+		mc_#{tableName}_log
+		<where>
+			<if test="name != null ">
+				where name like #{name}
+			</if>
+		</where>
+	</select>
+
+	<select id="page" parameterType="map" resultType="Log">
+		select * from
+		mc_#{tableName}_log
+		<include refid="where" />
+		<if test="order != null">
+			order by ${order}
+		</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_#{tableName}_log
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+		</where>
+	</select>
+
+	<select id="find" resultType="Log" parameterType="map">
+		select *
+		from
+		mc_admin_group
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+		</where>
+	</select>
+
+
+
+</mapper>

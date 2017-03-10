@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdSubjects">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				s.subject like #{name}
+			</if>
+			<if test="lookthroughed != null and lookthroughed.size() gt 0 ">
+				and s.lookthroughed in
+				<foreach collection="lookthroughed" index="index" item="l"
+					separator="," open="(" close=")">
+					#{l}
+				</foreach>
+			</if>
+
+			<if test="siteid != null and siteid.size() gt 0 ">
+				and s.siteid in
+				<foreach collection="siteid" index="index" item="s"
+					separator="," open="(" close=")">
+					#{s}
+				</foreach>
+			</if>
+			<if test="itemid != null and itemid.size() gt 0 ">
+				and s.itemid in
+				<foreach collection="itemid" index="index" item="s"
+					separator="," open="(" close=")">
+					#{s}
+				</foreach>
+			</if>
+			<if test="enabled != null ">
+				and s.lookthroughed in (${enabled})
+			</if>
+
+			<if test="enabledNotEq != null ">
+				and s.lookthroughed != #{enabledNotEq}
+			</if>
+
+			<if test="greaterThenId != null ">
+				and s.sid > #{greaterThenId}
+			</if>
+
+			<if test="authorid != null ">
+				and s.authorid = #{authorid}
+			</if>
+			<if test="stime != null ">
+				<![CDATA[ and s.date >= #{stime}]]>
+			</if>
+			<if test="etime != null ">
+				<![CDATA[and s.date <= #{etime}]]>
+			</if>
+
+			<if test="mofcom != null ">
+				and s.moftec = #{mofcom}
+			</if>
+			<if test="preid != null ">
+				and s.preid = #{preid}
+			</if>
+
+			<if test="preidNo != null ">
+				and s.preid != #{preidNo}
+			</if>
+
+			<if test="icId != null ">
+				and s.ic_id = #{icId}
+			</if>
+			<if test="suggested != null ">
+				and s.suggested = #{suggested}
+			</if>
+
+			<if test="bhot != null ">
+				and s.bhot = #{bhot}
+			</if>
+
+			<if test="sid != null ">
+				and s.sid = #{sid}
+			</if>
+
+			<if test="language != null ">
+				and s.language = #{language}
+			</if>
+			<!-- 下面是限制读取图片的条件,为了不拖累速度下面参数一般不用,在读取分页记录数的时候，没有对图片进行连接,如果使用此参数会出错 -->
+			<if test="isimage != null ">
+				and a.isimage = #{isimage}
+			</if>
+			<if test="isprimeimage != null ">
+				and a.isprimeimage = #{isprimeimage}
+			</if>
+			<if test="mainsite != null ">
+				and a.mainsite = #{mainsite}
+			</if>
+
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdSubjects" useGeneratedKeys="true"
+		keyProperty="sid">
+		INSERT INTO subjects
+		(itemid,siteid,preid,subject,subtitle,authorid,authorname,fromsite,img,date
+		,lookthroughed,language,period,url,tags
+		,ic_id,suggested,displayorder,sj_ip,temp,temp2)
+		VALUES
+		(#{itemid,jdbcType=NUMERIC},#{siteid,jdbcType=NUMERIC},#{preid,jdbcType=NUMERIC},#{subject},#{subtitle}
+		,#{authorid,jdbcType=NUMERIC},#{authorname},#{fromsite},#{img},#{date}
+		,#{lookthroughed},#{language},#{period,jdbcType=NUMERIC},#{url},#{tags}
+		,#{icId,jdbcType=NUMERIC},#{suggested,jdbcType=NUMERIC}
+		,#{displayorder,jdbcType=NUMERIC},#{sjIp},#{temp},#{temp2})
+	</insert>
+
+	<update id="update" parameterType="SdSubjects">
+		UPDATE subjects
+		<set>
+			<if test="itemid != null">itemid=#{itemid},</if>
+			<if test="date != null">date=#{date},</if>
+			<if test="siteid != null">siteid=#{siteid},</if>
+			<if test="preid != null">preid=#{preid},</if>
+			<if test="subject != null">subject=#{subject},</if>
+			<if test="subtitle != null">subtitle=#{subtitle},</if>
+			<if test="fromsite != null">fromsite=#{fromsite},</if>
+			<if test="img !=null">img=#{img},</if>
+			<if test="lastdate !=null">lastdate=#{lastdate},</if>
+			<if test="todayView !=null">today_view=#{todayView},</if>
+			<if test="view !=null">view=#{view},</if>
+			<if test="lookthroughed !=null">lookthroughed=#{lookthroughed},</if>
+			<if test="language !=null">language=#{language},</if>
+			<if test="period !=null">period=#{period},</if>
+			<if test="url !=null">url=#{url},</if>
+			<if test="tags !=null">tags=#{tags},</if>
+			<if test="icId !=null">ic_id=#{icId},</if>
+			<if test="bhot !=null">bhot=#{bhot},</if>
+			<if test="editDate !=null">editdate=#{editDate},</if>
+			<if test="editUser !=null">su_edit_user=#{editUser},</if>
+			<if test="suggested !=null">suggested=#{suggested},</if>
+			<if test="displayorder !=null">displayorder=#{displayorder},</if>
+			<if test="moftec !=null">moftec=#{moftec},</if>
+			<if test="viewMobile !=null">view_mobile=#{viewMobile},</if>
+			<if test="sjIp !=null">sj_ip=#{sjIp},</if>
+			<if test="sjLastIp !=null">sj_last_ip=#{sjLastIp},</if>
+			<if test="auditUid !=null">audit_uid=#{auditUid},</if>
+			<if test="auditDatetime !=null">audit_datetime=#{auditDatetime},</if>
+			<if test="auditIp !=null">audit_ip=#{auditIp},</if>
+			<if test="viewLastTime !=null">su_view_last_time=#{viewLastTime},</if>
+			<if test="temp !=null">temp=#{temp},</if>
+			<if test="temp2 !=null">temp2=#{temp2},</if>
+		</set>
+		where sid =#{sid}
+	</update>
+
+	<update id="updateSiteid" parameterType="SdSubjects">
+		UPDATE subjects
+		<set>
+			<if test="siteid != null">siteid=#{siteid},</if>
+			<if test="itemid != null">itemid=#{itemid},</if>
+		</set>
+		where siteid = #{sid} and itemid = #{bhot}
+	</update>
+
+	<resultMap type="SdSubjects" id="map">
+		<id column="sid" property="sid" />
+		<result column="itemid" property="itemid" />
+		<result column="siteid" property="siteid" />
+		<result column="preid" property="preid" />
+		<result column="subject" property="subject" />
+		<result column="subtitle" property="subtitle" />
+		<result column="authorid" property="authorid" />
+		<result column="authorname" property="authorname" />
+		<result column="fromsite" property="fromsite" />
+		<result column="img" property="img" />
+		<result column="date" property="date" />
+		<result column="lastdate" property="lastdate" />
+		<result column="today_view" property="todayView" />
+		<result column="view" property="view" />
+		<result column="lookthroughed" property="lookthroughed" />
+		<result column="language" property="language" />
+		<result column="period" property="period" />
+		<result column="url" property="url" />
+		<result column="tags" property="tags" />
+		<result column="ic_id" property="icId" />
+		<result column="bhot" property="bhot" />
+		<result column="editDate" property="editDate" />
+		<result column="su_edit_user" property="editUser" />
+		<result column="suggested" property="suggested" />
+		<result column="displayorder" property="displayorder" />
+		<result column="moftec" property="moftec" />
+		<result column="view_mobile" property="viewMobile" />
+		<result column="sj_ip" property="sjIp" />
+		<result column="sj_last_ip" property="sjLastIp" />
+		<result column="audit_uid" property="auditUid" />
+		<result column="audit_datetime" property="auditDatetime" />
+		<result column="audit_ip" property="auditIp" />
+		<result column="su_view_last_time" property="viewLastTime" />
+
+		<collection property="attachments" javaType="SdAttachments">
+			<id column="aid" property="aid" />
+			<result column="filename" property="filename" />
+			<result column="isimage" property="isimage" />
+			<result column="isprimeimage" property="isprimeimage" />
+			<result column="mainsite" property="mainsite" />
+			<result column="filetype" property="filetype" />
+			<result column="prefilename" property="prefilename" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="SdSubjects" id="subject">
+		<id column="sid" property="sid" />
+		<result column="itemid" property="itemid" />
+		<result column="siteid" property="siteid" />
+		<result column="preid" property="preid" />
+		<result column="date" property="date" />
+		<result column="subject" property="subject" />
+		<result column="subtitle" property="subtitle" />
+		<result column="authorid" property="authorid" />
+		<result column="authorname" property="authorname" />
+		<result column="fromsite" property="fromsite" />
+		<result column="img" property="img" />
+		<result column="date" property="date" />
+		<result column="lastdate" property="lastdate" />
+		<result column="today_view" property="todayView" />
+		<result column="view" property="view" />
+		<result column="lookthroughed" property="lookthroughed" />
+		<result column="language" property="language" />
+		<result column="period" property="period" />
+		<result column="url" property="url" />
+		<result column="tags" property="tags" />
+		<result column="swid" property="swid" />
+		<result column="ic_id" property="icId" />
+		<result column="bhot" property="bhot" />
+		<result column="editDate" property="editDate" />
+		<result column="su_edit_user" property="editUser" />
+		<result column="suggested" property="suggested" />
+		<result column="displayorder" property="displayorder" />
+		<result column="moftec" property="moftec" />
+		<result column="view_mobile" property="viewMobile" />
+		<result column="sj_ip" property="sjIp" />
+		<result column="sj_last_ip" property="sjLastIp" />
+		<result column="audit_uid" property="auditUid" />
+		<result column="audit_datetime" property="auditDatetime" />
+		<result column="audit_ip" property="auditIp" />
+		<result column="su_view_last_time" property="viewLastTime" />
+
+	</resultMap>
+
+	<delete id="delete" parameterType="string">
+		delete from subjects where
+		sid=#{sid}
+	</delete>
+
+	<select id="get" resultType="SdSubjects" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		subjects as s
+		left join attachments as a
+		on a.sid
+		= s.sid
+		where s.sid =
+		#{sid}
+	</select>
+
+	<select id="getSubject" resultType="SdSubjects" parameterType="string"
+		resultMap="subject">
+		select *
+		from
+		subjects as s
+		where s.sid =
+		#{sid}
+	</select>
+
+	<select id="select" resultType="SdSubjects" parameterType="SdSubjects"
+		resultMap="map">
+		select * from
+		subjects as s
+		left join attachments as a
+		on a.sid = s.sid
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		subjects as s
+		left join attachments as a
+		on a.sid = s.sid
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdSubjects"
+		resultMap="map">
+		select * from
+		subjects as s
+		left join attachments as a
+		on a.sid = s.sid
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		subjects as s
+		left join attachments as a
+		on a.sid =
+		s.sid
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdSubjects" parameterType="map"
+		resultMap="map">
+		select * from
+		subjects as s
+		left join attachments as a
+		on a.sid = s.sid
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<!-- 更新指定日期段新闻访问量=0 -->
+	<update id="subjectViewZero" parameterType="string">
+		update subjects set
+		today_view = 0
+		where today_view > 0
+		and
+		left(su_view_last_time,10) =
+		#{date}
+
+	</update>
+
+</mapper>

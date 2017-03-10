@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SurveyQuestionRules">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<insert id="insert" parameterType="SurveyQuestionRules">
+		INSERT INTO mc_survey_question_rules (id,
+		required,email,url,number,size,max,min,length,minLength,maxLength)
+		VALUES(#{id},#{required},#{email},#{url},#{number},#{size},#{max},#{min},#{length},#{minLength},#{maxLength})
+	</insert>
+
+	<update id="update" parameterType="SurveyQuestionRules">
+		UPDATE mc_survey_question_rules
+		<set>
+			<if test="required != null">required=#{required},</if>
+			<if test="email != null">email=#{email},</if>
+			<if test="url != null">url=#{url},</if>
+			<if test="number != null">number=#{number},</if>
+			<if test="size != null">size=#{size},</if>
+			<if test="max != null">max=#{max},</if>
+			<if test="min != null">min=#{min},</if>
+			<if test="length != null">length=#{length},</if>
+			<if test="minLength != null">minLength=#{minLength},</if>
+			<if test="maxLength != null">maxLength=#{maxLength},</if>
+
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_survey_question_rules where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="SurveyQuestionRules" parameterType="string">
+		select *
+		from
+		mc_survey_question_rules
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SurveyQuestionRules" parameterType="SurveyQuestionRules">
+		select *
+		from
+		mc_survey_question_rules
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_survey_question_rules
+	</select>
+
+	<select id="page" parameterType="map" resultType="SurveyQuestionRules">
+		select * from
+		mc_survey_question_rules
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select
+		count(*)
+		from
+		mc_survey_question_rules
+	</select>
+
+	<select id="find" resultType="SurveyQuestionRules"
+	parameterType="map">
+	select *
+	from
+	mc_survey_question_rules
+	</select>
+
+</mapper>

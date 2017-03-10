@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Comment">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="content != null ">
+				content like #{content}
+			</if>
+			<if test="name != null ">
+				and name like #{name}
+			</if>
+			<choose>
+				<when test="status!=null">
+					and delFlag = #{status}
+				</when>
+				<otherwise>
+					and delFlag !=1
+				</otherwise>
+			</choose>
+			<if test="cid != null ">
+				and cid = #{cid}
+			</if>
+
+			<if test="createDate != null">
+				<![CDATA[and  createDate >= #{createDate}]]>
+			</if>
+
+		</where>
+	</sql>
+
+	<sql id="order">
+		<if test="order != null">
+			order by ${order}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="Comment">
+		INSERT INTO
+		mc_comment
+		(id,
+		cid,contentId,title,content,
+		name,email,tel,ip,createDate,uid,auditDate,delFlag,display,replay,belong,belongType)
+		VALUES(#{id},#{category.id},#{contentId},#{title},#{content},#{name},#{email},#{tel},#{ip},#{createDate},#{uid},#{auditDate},
+		#{delFlag},#{display},#{replay},#{belong},#{belongType})
+	</insert>
+
+	<update id="update" parameterType="Comment">
+		UPDATE mc_comment
+		<set>
+			<if test="cid != null">cid=#{category.id},</if>
+			<if test="contentId != null">contentId=#{contentId},</if>
+			<if test="auditDate != null">auditDate=#{auditDate},</if>
+			<if test="delFlag != null">delFlag=#{delFlag},</if>
+			<if test="display != null">display=#{display},</if>
+			<if test="replay != null">replay=#{replay},</if>
+			<if test="belong != null">belong=#{belong},</if>
+			<if test="belongType != null">belongType=#{belongType},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from
+		mc_comment
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="AdminGroup" parameterType="string">
+		select *
+		from
+		mc_comment
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="AdminGroup" parameterType="Comment">
+		select * from
+		mc_comment
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="Comment">
+		select * from
+		mc_comment
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_comment
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="Comment" parameterType="map">
+		select *
+		from
+		mc_comment
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

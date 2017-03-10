@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdTabLeaveword">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				(lw_user like #{name} or lw_tel like #{name} or lw_email like #{name} or lw_content like #{name} 
+				or lw_ip like #{name})
+			</if>
+			<if test="content != null ">
+				lw_content like #{content}
+			</if>
+			<if test="show != null ">
+				and bShow = #{show}
+			</if>
+			<if test="open != null ">
+				and lw_bopen = #{open}
+			</if>
+			<if test="answer != null">
+				and lw_answer is not null
+			</if>
+			<if test="depids != null and depids.size() > 0">
+				and dep_id in
+				<foreach collection="depids" index="index" item="item" open="("
+					separator="," close=")">
+					${item}
+				</foreach>
+			</if>
+			<if test="type != null ">
+				and lw_type = #{type}
+			</if>
+
+			<if test="typelt != null ">
+				<![CDATA[and lw_type < #{typelt}]]>
+			</if>
+
+			<if test="minister != null">
+				and lw_type != 6
+			</if>
+			<if test="depId != null ">
+				and dep_id = #{depId}
+			</if>
+			<if test="state != null ">
+				and lw_state = #{state}
+			</if>
+			
+			<if test="stateGt != null ">
+				and lw_state > #{stateGt}
+			</if>
+
+			<if test="stategt != null ">
+				<![CDATA[and lw_state > #{stategt}]]>
+			</if>
+
+			<if test="ip != null">
+				and lw_ip = #{ip}
+			</if>
+
+			<if test="stime != null ">
+				<![CDATA[and lw_time >= #{stime}]]>
+			</if>
+
+			<if test="etime != null ">
+				<![CDATA[and lw_time <= #{etime}]]>
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order != null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+
+	<sql id="group">
+		<if test="group != null">
+			GROUP BY ${group}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="SdTabLeaveword">
+		INSERT INTO tab_leaveword
+		(lw_user,lw_email,lw_content,lw_time,lw_ip,lw_state,dep_id
+		,lw_type,lw_tel,bShow,lw_bopen,sid,php_server_object,bmob)
+		VALUES(#{user},#{email},#{content},#{time},#{ip},#{state},#{depId}
+		,#{type},#{tel},#{bShow},#{bopen},#{sid},#{phpServerObject},#{bmob})
+	</insert>
+
+	<resultMap type="SdTabLeaveword" id="map">
+		<id column="id" property="id" />
+		<result column="lw_user" property="user" />
+		<result column="lw_email" property="email" />
+		<result column="lw_content" property="content" />
+		<result column="lw_time" property="time" />
+		<result column="lw_ip" property="ip" />
+		<result column="lw_state" property="state" />
+		<result column="dep_id" property="depId" />
+		<result column="lw_answer" property="answer" />
+		<result column="lw_answer_time" property="answerTime" />
+		<result column="lw_answer_user" property="answerUser" />
+		<result column="lw_type" property="type" />
+		<result column="lw_tel" property="tel" />
+		<result column="bShow" property="bShow" />
+		<result column="lw_bopen" property="bopen" />
+		<result column="sid" property="sid" />
+		<result column="php_server_object" property="phpServerObject" />
+		<result column="bmob" property="bmob" />
+		<result column="office_move_time" property="officeMoveTime" />
+		<result column="answer_diff" property="answerDiff" />
+
+	</resultMap>
+
+	<update id="update" parameterType="SdTabLeaveword">
+		UPDATE tab_leaveword
+		<set>
+			<if test="state != null">lw_state=#{state},</if>
+			<if test="depId != null">dep_id=#{depId},</if>
+			<if test="answer != null">lw_answer=#{answer},</if>
+			<if test="answerTime != null">lw_answer_time=#{answerTime},</if>
+			<if test="answerUser != null">lw_answer_user=#{answerUser},</if>
+			<if test="bShow != null">bShow=#{bShow},</if>
+			<if test="bopen !=null">lw_bopen=#{bopen},</if>
+			<if test="bmob != null">bmob=#{bmob},</if>
+			<if test="officeMoveTime != null">office_move_time=#{officeMoveTime},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from tab_leaveword
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdTabLeaveword" parameterType="string"
+		resultMap="map">
+		select *,TIMESTAMPDIFF(DAY,lw_time,lw_answer_time) as
+		answer_diff
+		from
+		tab_leaveword
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdTabLeaveword" parameterType="SdTabLeaveword"
+		resultMap="map">
+		select *,TIMESTAMPDIFF(DAY,lw_time,lw_answer_time) as answer_diff
+		from
+		tab_leaveword
+		<include refid="where" />
+		<include refid="group" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select *,TIMESTAMPDIFF(DAY,lw_time,lw_answer_time) as answer_diff
+		from
+		tab_leaveword
+		<include refid="where" />
+		<include refid="group" />
+		<include refid="order" />
+
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdTabLeaveword"
+		resultMap="map">
+		select *,TIMESTAMPDIFF(DAY,lw_time,lw_answer_time) as answer_diff
+		from
+		tab_leaveword
+		<include refid="where" />
+		<include refid="group" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		tab_leaveword
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdTabLeaveword" parameterType="map"
+		resultMap="map">
+		select *,TIMESTAMPDIFF(DAY,lw_time,lw_answer_time) as answer_diff
+		from
+		tab_leaveword
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

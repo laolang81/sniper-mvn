@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Members">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="username != null ">
+				username like #{username}
+			</if>
+			<if test="password != null ">
+				and password = #{password}
+			</if>
+			<if test="email != null ">
+				and email = #{email}
+			</if>
+			<if test="enabled != null ">
+				and enabled = #{enabled}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="Members">
+		INSERT INTO mc_members (uid,
+		username,password,email,checkEmail,myid,myidkey,regip,regdate,lastloginip,lastlogintime,
+		enabled,locked,username_Expired,password_Expired)
+		VALUES(#{uid},#{username},#{password},#{email},#{checkEmail},#{myid},#{myidkey},#{regip},#{regdate},#{lastloginip},#{lastlogintime},
+		#{enabled},#{locked},#{usernameExpired},#{passwordExpired})
+	</insert>
+
+	<update id="update" parameterType="Members">
+		UPDATE mc_members
+		<set>
+			<if test="username != null">username=#{username},</if>
+			<if test="password != null">password=#{password},</if>
+			<if test="email != null">email=#{email},</if>
+			<if test="checkEmail != null">checkEmail=#{checkEmail},</if>
+			<if test="myid != null">myid=#{myid},</if>
+			<if test="myidkey != null">myidkey=#{myidkey},</if>
+			<if test="regip !=null">regip=#{regip},</if>
+			<if test="regdate != null">regdate=#{regdate},</if>
+			<if test="lastloginip !=null">lastloginip=#{lastloginip},</if>
+			<if test="lastlogintime != null">lastlogintime=#{lastlogintime},</if>
+			<if test="enabled != null">enabled=#{enabled},</if>
+			<if test="locked != null">locked=#{locked},</if>
+			<if test="username_Expired != null">usernameExpired=#{usernameExpired},</if>
+			<if test="password_Expired != null">passwordExpired=#{passwordExpired}</if>
+
+		</set>
+		where uid =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_members where
+		uid=#{id}
+	</delete>
+
+	<resultMap type="Members" id="getMap">
+		<result property="passwordExpired" column="password_Expired" />
+		<result property="usernameExpired" column="username_Expired" />
+	</resultMap>
+
+	<select id="get" resultType="Members" parameterType="string"
+		resultMap="getMap">
+		select *
+		from
+		mc_members
+		where uid =
+		#{id}
+	</select>
+
+	<select id="select" resultType="Members" parameterType="Members"
+		resultMap="getMap">
+		select * from
+		mc_members
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_members
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="Members"
+		resultMap="getMap">
+		select * from
+		mc_members
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_members
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="Members" parameterType="map">
+		select * from
+		mc_members
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

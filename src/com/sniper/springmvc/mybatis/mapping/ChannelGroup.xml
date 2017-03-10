@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.ChannelGroup">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				cg.name like #{name}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="order">
+		<if test="order != null">
+			order by ${order}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="ChannelGroup">
+		INSERT INTO mc_channel_group
+		(id,
+		name,description,cDatetime)
+		VALUES(#{id},#{name},#{description},#{cDatetime})
+	</insert>
+
+	<update id="update" parameterType="ChannelGroup">
+		UPDATE mc_channel_group
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="description != null">description=#{description},</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<delete id="delete" parameterType="string">
+		delete from mc_channel_group
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="ChannelGroup" parameterType="string"
+		resultMap="getMap">
+		select
+		*,c.name as cname
+		from
+		mc_channel_group cg
+		left join
+		mc_channels_groups
+		cgs on cg.id =
+		cgs.group_id
+		left join mc_channel c on
+		c.id =
+		cgs.channel_id
+		where cg.id
+		=
+		#{id}
+	</select>
+
+	<resultMap type="ChannelGroup" id="getMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="cDatetime" column="cDatetime" />
+		<collection property="channels" ofType="Channel">
+			<id property="id" column="channel_id" />
+			<result property="name" column="cname" />
+		</collection>
+
+	</resultMap>
+
+	<select id="select" resultType="ChannelGroup" parameterType="ChannelGroup">
+		select * from
+		mc_channel_group
+		<include refid="where" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="ChannelGroup"
+		resultMap="getMap">
+		select
+		*,c.name as cname
+		from
+		mc_channel_group cg
+		left join
+		mc_channels_groups
+		cgs on cg.id =
+		cgs.group_id
+		left join mc_channel c on
+		c.id =
+		cgs.channel_id
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_channel_group
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="ChannelGroup" parameterType="map">
+		select *
+		from
+		mc_channel_group
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

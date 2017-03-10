@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdAdAddress">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				aa_name like #{name}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdAdAddress">
+		INSERT INTO mc_ad_address (
+		aa_name,aa_ctime,aa_uid,aa_note,aa_key)
+		VALUES(
+		#{name},#{ctime},#{uid},#{note},#{key})
+	</insert>
+
+	<update id="update" parameterType="SdAdAddress">
+		UPDATE mc_ad_address
+		<set>
+			<if test="name != null">aa_name=#{name},</if>
+			<if test="note != null">aa_note=#{note},</if>
+			<if test="key != null">aa_key=#{key},</if>
+
+		</set>
+		where aa_id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_ad_address
+		where
+		aa_id=#{id}
+	</delete>
+
+	<resultMap type="SdAdAddress" id="map">
+		<id column="aa_id" property="id" />
+		<result column="aa_name" property="name" />
+		<result column="aa_ctime" property="ctime" javaType="java.util.Date" />
+		<result column="aa_uid" property="uid" />
+		<result column="aa_note" property="note" />
+		<result column="aa_key" property="key" />
+	</resultMap>
+
+	<select id="get" resultType="SdAdAddress" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		mc_ad_address
+		where aa_id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdAdAddress" parameterType="SdAdAddress"
+		resultMap="map">
+		select * from
+		mc_ad_address
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_ad_address
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdAdAddress"
+		resultMap="map">
+		select * from
+		mc_ad_address
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_ad_address
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdAdAddress" parameterType="map"
+		resultMap="map">
+		select * from
+		mc_ad_address
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

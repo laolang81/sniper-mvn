@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdLogLog">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="enabled != null ">
+				and enabled = #{enabled}
+			</if>
+			<if test="typeId != null ">
+				and typeId = #{typeId}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdLogLog">
+		INSERT INTO mc_ad (
+		timestamp,priority,message,priorotyName)
+		VALUES(#{timestamp},#{priority},#{message},#{priorotyName})
+	</insert>
+
+	<update id="update" parameterType="SdLogLog">
+		UPDATE mc_ad
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="description != null">description=#{description},</if>
+			<if test="attachment != null">attachment=#{attachment},</if>
+			<if test="typeId != null">typeId=#{typeId},</if>
+			<if test="enabled != null">enabled=#{enabled},</if>
+			<if test="width != null">width=#{width},</if>
+			<if test="height !=null">height=#{height},</if>
+			<if test="url != null">url=#{url},</if>
+			<if test="sort !=null">sort=#{sort}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_ad where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdLogLog" parameterType="string">
+		select *
+		from
+		mc_ad
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdLogLog" parameterType="SdLogLog">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdLogLog">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_ad
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdLogLog" parameterType="map">
+		select * from
+		mc_ad
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

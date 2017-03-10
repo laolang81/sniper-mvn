@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdStatIndexSum">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+
+			<if test="stime != null ">
+				<![CDATA[ and date >= #{stime}]]>
+			</if>
+			<if test="etime != null ">
+				<![CDATA[and date <= #{etime}]]>
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+
+	<sql id="limit">
+		<if test="pageSize != null">
+			limit #{pageSize}
+		</if>
+	</sql>
+
+	<insert id="insert" parameterType="SdStatIndexSum">
+		INSERT INTO stat_index_sum
+		(date,view,info)
+		VALUES
+		(#{date},#{view},#{info})
+	</insert>
+
+	<update id="update" parameterType="SdStatIndexSum">
+		UPDATE stat_index_sum
+		<set>
+			<if test="date != null">date=#{date},</if>
+			<if test="view != null">view=#{view},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from stat_index_sum
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="SdStatIndexSum" parameterType="string">
+		select *
+		from
+		stat_index_sum
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdStatIndexSum" parameterType="SdStatIndexSum">
+		select * from
+		stat_index_sum
+		<include refid="where" />
+		<include refid="order" />
+		<include refid="limit" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select view as v, date as d from
+		stat_index_sum
+		<include refid="where" />
+		<include refid="order" />
+		<include refid="limit" />
+	</select>
+
+	<select id="statMonth" resultType="hashmap" parameterType="hashmap">
+		SELECT sum(view) as v,date_format(date,'%Y-%m') as d FROM stat_index_sum
+		<include refid="where" />
+		group by d
+		order by d desc
+		<include refid="limit" />
+	</select>
+
+	<select id="statYear" resultType="hashmap" parameterType="hashmap">
+		SELECT sum(view) as v,date_format(date,'%Y') as d FROM stat_index_sum
+		<include refid="where" />
+		group by d
+		order by d desc
+		<include refid="limit" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdStatIndexSum">
+		select * from
+		stat_index_sum
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		stat_index_sum
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdStatIndexSum" parameterType="map">
+		select * from
+		stat_index_sum
+		<include refid="where" />
+	</select>
+
+</mapper>

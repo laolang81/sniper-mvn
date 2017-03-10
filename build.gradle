@@ -1,0 +1,196 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+//apply plugin: 'war'
+
+//webAppDirName = 'sniper'
+
+repositories {
+   mavenCentral()
+   // mavenRepo url: "http://repo.maven.apache.org/maven2"
+   //添加maven额外的仓库地址
+   
+   maven {
+   		url "https://artifacts.alfresco.com/nexus/content/repositories/public"
+   }
+   
+   maven {
+   		url "https://mvnrepository.com/artifact/org.apache.poi/poi"
+   }
+   
+    
+    
+    maven {
+   		url "http://maven.aliyun.com/nexus/content/groups/public"
+   }
+   
+   // 
+
+  	
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+//jackson-annotations-2.5.0
+dependencies {
+    compile (
+    	
+    	'joda-time:joda-time:2.9.7',
+    	'ch.qos.logback:logback-classic:1.1.7',
+    	//'ch.qos.logback:logback-core:1.1.7',
+    	'org.slf4j:slf4j-log4j12:1.7.21',
+    	//'org.slf4j:slf4j-jdk14:1.7.5',
+    	'mysql:mysql-connector-java:6.0.5',
+    	'com.mchange:c3p0:0.9.5.2',
+    	//由于老是下载另外一个版本而且根本下不来
+    	//'org.ehcache:ehcache:3.2.0',
+    	//'org.springframework.boot:spring-boot-starter-web:1.3.5.RELEASE',
+    	'org.springframework:spring-aop:5.0.0.M4',
+    	'org.springframework:spring-aspects:5.0.0.M4',
+    	'org.springframework:spring-beans:5.0.0.M4',
+    	'org.springframework:spring-test:5.0.0.M4',
+    	'org.springframework:spring-context:5.0.0.M4',
+    	'org.springframework:spring-context-support:5.0.0.M4',
+    	'org.springframework:spring-core:5.0.0.M4',
+    	'org.springframework:spring-expression:5.0.0.M4',
+    	'org.springframework:spring-jdbc:5.0.0.M4',
+    	'org.springframework:spring-orm:5.0.0.M4',
+    	'org.springframework:spring-tx:5.0.0.M4',
+    	'org.springframework:spring-instrument:5.0.0.M4',
+    	//'org.springframework:spring-instrument-tomcat:4.3.6-RELEASE',
+    	'org.springframework:spring-web:5.0.0.M4',
+    	'org.springframework:spring-webmvc:5.0.0.M4',
+    	'org.springframework:spring-websocket:5.0.0.M4',
+    	'org.springframework:spring-messaging:5.0.0.M4',
+    	//'org.springframework.webflow:spring-webflow:2.4.4.RELEASE',
+    	'org.springframework.session:spring-session:1.3.0.RELEASE',
+    	'org.springframework.session:spring-session-data-redis:1.3.0.RELEASE',
+    	
+    	'org.quartz-scheduler:quartz:2.2.3',
+    	'org.quartz-scheduler:quartz-jobs:2.2.3',
+    	
+    	'org.apache.commons:commons-lang3:3.4',
+    	//'org.apache.commons:commons-dbcp2:2.1',
+    	'org.apache.commons:commons-pool2:2.4.2',
+    	'org.apache.commons:commons-digester3:3.2',
+    	'org.apache.commons:commons-collections4:4.1',
+    	'org.apache.httpcomponents:httpclient:4.4.1',
+    	'org.apache.commons:commons-email:1.4',
+    	
+    	'commons-codec:commons-codec:1.10',
+    	'commons-cli:commons-cli:1.2',
+    	'commons-io:commons-io:2.4',
+    	'commons-validator:commons-validator:1.4.0',
+    	'commons-logging:commons-logging:1.2',
+    	'commons-beanutils:commons-beanutils:1.9.2',
+    	'commons-fileupload:commons-fileupload:1.3.1',
+    	
+    	'org.sitemesh:sitemesh:3.0.1',
+    	'org.freemarker:freemarker:2.3.23',
+    	
+    	//'org.json:json:20140107',
+    	//auto
+    	//'asm:asm:3.3.1',
+    	//'asm:asm-commons:3.3.1',
+    	//'asm:asm-tree:3.3.1',
+		    	
+    	'javax.servlet:jstl:1.2',
+    	//'javax.servlet:javax.servlet-api:3.1.0',
+    	//'javax.transaction:jta:1.1',
+    	//下载速度超级慢
+    	//'org.apache.poi:poi:3.15',
+    	//'org.apache.poi:poi-excelant:3.15',
+    	//'org.apache.poi:poi-ooxml:3.15',
+    	//'org.apache.poi:poi-ooxml-schemas:3.15',
+    	//'org.apache.poi:poi-scratchpad:3.15',
+    	
+    	'org.apache.xmlbeans:xmlbeans:2.6.0',
+    	//'jmagick:jmagick:6.6.9',
+    	'redis.clients:jedis:2.9.0',
+    	//'org.directwebremoting:dwr:3.0.M1',
+    	//'org.apache.karaf.shell:org.apache.karaf.shell.console:3.0.1',
+    	//由于下载速度太慢注释掉
+    	//'com.sun.mail:javax.mail:1.5.6',
+    	//'com.sun.media:jai_imageio:1.1',
+    	'com.rometools:rome:1.7.0',
+    	//'org.mybatis:mybatis:3.4.2',
+    	'org.mybatis:mybatis-spring:1.3.1',
+    	'xml-apis:xml-apis:2.0.2',
+    	//'xml-apis:xml-apis-ext:1.3.04',
+    	//二维码
+    	'com.google.zxing:core:3.2.1',
+    	'com.google.zxing:javase:3.2.1',
+    	// android-core
+    	//'com.google.zxing:android-core:3.2.1'
+    	'com.fasterxml.jackson.core:jackson-databind:2.8.6',
+    	'com.fasterxml.jackson.core:jackson-core:2.8.6',
+    	'com.fasterxml.jackson.core:jackson-annotations:2.8.6',
+    	
+    	'junit:junit:4.12',
+    	
+    	//'org.apache.lucene:lucene-core:5.3.1',
+    	//'org.apache.lucene:lucene-analyzers:3.6.2',
+    	//'org.apache.lucene:lucene-analyzers-common:5.3.1',
+    	//'org.apache.lucene:lucene-highlighter:5.3.1',
+    	//'org.apache.lucene:lucene-queryparser:5.3.1',
+    	//'org.apache.pdfbox:pdfbox:1.8.9',
+    	
+    	//'org.jasig.cas:cas-server-core:4.0.1',
+    	'org.jasig.cas.client:cas-client-core:3.3.3',
+    	//'org.jasig.cas:cas-server-integration-restlet:4.0.3', 
+    	//'org.jasig.cas:cas-server-integration-berkeleydb:3.5.0-RC2',
+    	//'berkeleydb:je:3.2.76',
+    	//'org.springframework.data:spring-data-redis:1.5.2.RELEASE',
+    	
+    	//'org.apache.xmlgraphics:batik-svg-dom:1.8',
+    	//'org.apache.xmlgraphics:batik-svggen:1.8',
+    	//'org.apache.xmlgraphics:batik-transcoder:1.8',
+    	'net.coobird:thumbnailator:0.4.8',
+    	//'jmagick:jmagick:6.6.9'
+    	
+    	// oauth2
+    	'org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:1.0.0',
+    	'org.apache.oltu.oauth2:org.apache.oltu.oauth2.resourceserver:1.0.0',
+    	'org.apache.oltu.oauth2:org.apache.oltu.oauth2.authzserver:1.0.0',
+    	'org.fusesource:sigar:1.6.4',
+    	'org.mongodb:mongo-java-driver:3.2.1',
+    	//Smb服务
+    	'org.samba.jcifs:jcifs:1.3.14-kohsuke-1',
+    	//'org.ansj:tree_split:1.0.1'
+    	//solr货站
+    	'org.apache.solr:solr-solrj:6.4.1',
+    	//压缩程序
+    	'org.msgpack:msgpack:0.6.12',
+    	//shiro
+    	'org.apache.shiro:shiro-core:1.4.0-RC2',
+    	'org.apache.shiro:shiro-web:1.4.0-RC2',
+    	'org.apache.shiro:shiro-spring:1.4.0-RC2',
+    	//'org.apache.shiro:shiro-ehcache:1.4.0-RC2',
+    	'org.apache.shiro:shiro-guice:1.4.0-RC2',
+    	'org.apache.shiro:shiro-all:1.4.0-RC2',
+    	'org.apache.shiro:shiro-lang:1.4.0-RC2',
+    	'org.apache.shiro:shiro-cas:1.4.0-RC2',
+    	'org.apache.shiro:shiro-aspectj:1.4.0-RC2',
+    	'org.apache.shiro:shiro-quartz:1.4.0-RC2'
+		
+    )
+    
+   // testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task copyJars(type: Copy)  {
+	from configurations.runtime
+	into 'WebRoot/WEB-INF/lib' // 目标位置
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'org.springframework') {
+            details.useVersion '5.0.0.M4'
+        }  
+    }
+}

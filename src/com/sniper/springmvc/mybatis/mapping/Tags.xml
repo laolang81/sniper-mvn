@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Tags">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="enabled != null ">
+				and enabled = #{enabled}
+			</if>
+		</where>
+	</sql>
+
+	<insert id="insert" parameterType="Tags">
+		INSERT INTO
+		mc_tags
+		(id,
+		name,ctime,uid,sort, plug,enabled,searchNum,description)
+		VALUES(#{id},#{name},#{ctime},#{adminUser.id},#{sort},#{plug},#{enabled},#{searchNum},#{description})
+	</insert>
+
+	<update id="update" parameterType="Tags">
+		UPDATE mc_tags
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="note != null">note=#{note},</if>
+			<if test="sort != null">sort=#{sort},</if>
+			<if test="plug != null">plug=#{plug},</if>
+			<if test="enabled != null">enabled=#{enabled},</if>
+			<if test="searchNum != null">searchNum=#{searchNum},</if>
+			<if test="description != null">description=#{description},</if>
+			<if test="value != null">value=#{value}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from
+		mc_tags
+		where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="Tags" parameterType="string">
+		select *
+		from
+		mc_tags
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="Tags" parameterType="Tags">
+		select * from
+		mc_tags
+		<include refid="where" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="Tags">
+		select * from
+		mc_tags
+		<include refid="where" />
+		<if test="order != null">
+			order by ${order}
+		</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_tags
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="Tags" parameterType="map">
+		select *
+		from
+		mc_tags
+		<include refid="where" />
+	</select>
+
+</mapper>

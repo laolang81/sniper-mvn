@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.Channel">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				name like #{name}
+			</if>
+			<if test="cname != null ">
+				and name = #{cname}
+			</if>
+			<if test="status != null ">
+				and status = #{status}
+			</if>
+			<if test="showType != null ">
+				and showType in
+				<foreach collection="showType" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="fid != null ">
+				and fid = #{fid}
+			</if>
+			<if test="showHome != null ">
+				and showHome = #{showHome}
+			</if>
+
+		</where>
+	</sql>
+	<insert id="insert" parameterType="Channel">
+		INSERT INTO mc_channel (id,
+		name,fid,sort,stime,uid,status,url,target,description,keywords,showType,showHome,attachement,note)
+		VALUES
+		(#{id},#{name},#{fid},#{sort},#{stime},#{uid},#{status},#{url},#{target},#{description},#{keywords},#{showType},#{showHome},#{attachement},#{note})
+	</insert>
+
+	<update id="update" parameterType="Channel">
+		UPDATE mc_channel
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="fid != null">fid=#{fid},</if>
+			<if test="sort != null">sort=#{sort},</if>
+			<if test="letime !=null">letime=#{letime},</if>
+			<if test="status != null">status=#{status},</if>
+			<if test="url != null">url=#{url},</if>
+			<if test="target !=null ">target=#{target},</if>
+			<if test="description !=null ">description=#{description},</if>
+			<if test="keywords !=null ">keywords=#{keywords},</if>
+			<if test="showType !=null ">showType=#{showType},</if>
+			<if test="showHome !=null ">showHome=#{showHome},</if>
+			<if test="attachement !=null ">attachement=#{attachement},</if>
+			<if test="note !=null ">note=#{note}</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_channel where
+		id=#{id}
+	</delete>
+
+	<select id="get" resultType="Channel" parameterType="string">
+		select *
+		from
+		mc_channel
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="Channel" parameterType="Channel">
+		select * from
+		mc_channel
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_channel
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="Channel">
+		select * from
+		mc_channel
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_channel
+		<include refid="where" />
+
+	</select>
+
+	<select id="find" resultType="Channel" parameterType="map">
+		select * from
+		mc_channel
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

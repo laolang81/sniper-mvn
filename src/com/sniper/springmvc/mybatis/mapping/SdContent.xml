@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdContent">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="sid != null ">
+				sid = #{sid}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdContent">
+		INSERT INTO content
+		(sid,content)
+		VALUES
+		(#{sid},#{content})
+	</insert>
+
+	<update id="update" parameterType="SdContent">
+		UPDATE content
+		<set>
+			<if test="content != null">content=#{content},</if>
+		</set>
+		where sid =#{sid}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from content where
+		sid=#{sid}
+	</delete>
+
+	<select id="get" resultType="SdContent" parameterType="string">
+		select *
+		from
+		content
+		where sid =
+		#{sid}
+	</select>
+
+	<select id="select" resultType="SdContent" parameterType="SdContent">
+		select * from
+		content
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		content
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdContent">
+		select * from
+		content
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		content
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdContent" parameterType="map">
+		select * from
+		content
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

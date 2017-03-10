@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SurveyQuestion">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="pid != null ">
+				and page_id = #{pid}
+			</if>
+			<if test="id != null ">
+				and id = #{id}
+			</if>
+			<if test="sort !=null">and ${sort}</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SurveyQuestion">
+		INSERT INTO mc_survey_question
+		(id,
+		name,title,type,sort,relation,otherStyle,matrixRowTitles,matrixRowRightTitles,matrixColTitles,
+		matrixColValues,matrixSelectOptions,page_id,rule_id)
+		VALUES(#{id},#{name},#{title},#{type},#{sort},#{relation},#{otherStyle},#{matrixRowTitles},#{matrixRowRightTitles},
+		#{matrixColTitles},#{matrixColValues},#{matrixSelectOptions},#{page.id},#{rules.id})
+	</insert>
+
+	<update id="update" parameterType="SurveyQuestion">
+		UPDATE mc_survey_question
+		<set>
+			<if test="name != null">name=#{name},</if>
+			<if test="title != null">title=#{title},</if>
+			<if test="type != null">type=#{type},</if>
+			<if test="sort != null">sort=#{sort},</if>
+			<if test="otherStyle != null">otherStyle=#{otherStyle},</if>
+			<if test="matrixRowTitles != null">matrixRowTitles=#{matrixRowTitles},</if>
+			<if test="matrixRowRightTitles != null">matrixRowRightTitles=#{matrixRowRightTitles},</if>
+			<if test="matrixColTitles != null">matrixColTitles=#{matrixColTitles},</if>
+			<if test="matrixColValues != null">matrixColValues=#{matrixColValues},</if>
+			<if test="matrixSelectOptions != null">matrixSelectOptions=#{matrixSelectOptions},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<delete id="delete" parameterType="string">
+		delete from mc_survey_question
+		where
+		id=#{id}
+	</delete>
+
+	<delete id="deleteByPage" parameterType="string">
+		delete from
+		mc_survey_question
+		where
+		page_id=#{id}
+	</delete>
+
+
+	<select id="get" resultType="SurveyQuestion" parameterType="string">
+		select *
+		from
+		mc_survey_question
+		where id =
+		#{id}
+	</select>
+
+	<select id="getByPage" resultType="SurveyQuestion"
+		parameterType="string">
+		select *
+		from
+		mc_survey_question
+		where page_id =
+		#{id}
+	</select>
+
+	<select id="getMap" resultType="SurveyQuestion" parameterType="string">
+		select *
+		from
+		mc_survey_question
+		where id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SurveyQuestion" parameterType="SurveyQuestion">
+		select * from
+		mc_survey_question
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		mc_survey_question
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SurveyQuestion">
+		select * from
+		mc_survey_question
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_survey_question
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SurveyQuestion" parameterType="map">
+		select * from
+		mc_survey_question
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>

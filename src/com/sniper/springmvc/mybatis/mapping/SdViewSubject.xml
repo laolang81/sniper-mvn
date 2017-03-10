@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdViewSubject">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="name != null ">
+				s.subject REGEXP #{name}
+			</if>
+			<if test="lookthroughed != null and lookthroughed.size() gt 0 ">
+				and s.lookthroughed in
+				<foreach collection="lookthroughed" index="index" item="l"
+					separator="," open="(" close=")">
+					#{l}
+				</foreach>
+			</if>
+			<if test="siteid != null and siteid.size() gt 0 ">
+				and s.siteid in
+				<foreach collection="siteid" index="index" item="s"
+					separator="," open="(" close=")">
+					#{s}
+				</foreach>
+			</if>
+			<if test="itemid != null and itemid.size() gt 0 ">
+				and s.t_itemid in
+				<foreach collection="itemid" index="index" item="s"
+					separator="," open="(" close=")">
+					#{s}
+				</foreach>
+			</if>
+			<if test="authorid != null ">
+				and s.authorid = #{authorid}
+			</if>
+			<if test="stime != null ">
+				<![CDATA[ and s.date >= #{stime}]]>
+			</if>
+			<if test="etime != null ">
+				<![CDATA[and s.date <= #{etime}]]>
+			</if>
+
+			<if test="mofcom != null ">
+				and s.moftec = #{mofcom}
+			</if>
+			<if test="preid != null ">
+				and s.preid = #{preid}
+			</if>
+
+			<if test="preidNo != null ">
+				and s.preid != #{preidNo}
+			</if>
+
+			<if test="icId != null ">
+				and s.ic_id = #{icId}
+			</if>
+			<if test="suggested != null ">
+				and s.suggested = #{suggested}
+			</if>
+			<if test="bhot != null ">
+				and s.bhot = #{bhot}
+			</if>
+
+			<if test="sid != null ">
+				and s.sid = #{sid}
+			</if>
+
+			<if test="language != null ">
+				and s.language = #{language}
+			</if>
+
+			<!-- 下面是限制读取图片的条件,为了不拖累速度下面参数一般不用,在读取分页记录数的时候，没有对图片进行连接,如果使用此参数会出错 -->
+			<if test="isimage != null ">
+				and a.isimage = #{isimage}
+			</if>
+			<if test="isprimeimage != null ">
+				and a.isprimeimage = #{isprimeimage}
+			</if>
+			<if test="mainsite != null ">
+				and a.mainsite = #{mainsite}
+			</if>
+		</where>
+	</sql>
+	<!-- 下面是限制读取图片的条件,为了不拖累速度下面参数一般不用,在读取分页记录数的时候，没有对图片进行连接,如果使用此参数会出错 -->
+	<sql id="imageWhere">
+		<!-- -->
+		<if test="isimage != null ">
+			and a.isimage = #{isimage}
+		</if>
+		<if test="isprimeimage != null ">
+			and a.isprimeimage = #{isprimeimage}
+		</if>
+		<if test="mainsite != null ">
+			and a.mainsite = #{mainsite}
+		</if>
+	</sql>
+
+	<sql id="group">
+		<if test="group !=null">
+			GROUP BY ${group}
+		</if>
+	</sql>
+
+	<sql id="having">
+		<if test="having !=null">
+			HANGING ${having}
+		</if>
+	</sql>
+
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+
+
+	<resultMap type="SdViewSubject" id="map">
+		<id column="sid" property="id" />
+		<result column="itemid" property="itemid" />
+		<result column="siteid" property="siteid" />
+		<result column="preid" property="preid" />
+		<result column="subject" property="subject" />
+		<result column="authorid" property="authorid" />
+		<result column="fromsite" property="fromsite" />
+		<result column="date" property="date" />
+		<result column="today_view" property="todayView" />
+		<result column="view" property="view" />
+		<result column="lookthroughed" property="lookthroughed" />
+		<result column="language" property="language" />
+		<result column="period" property="period" />
+		<result column="url" property="url" />
+		<result column="ic_id" property="icId" />
+		<result column="bhot" property="bhot" />
+		<result column="editdate" property="editdate" />
+		<result column="su_edit_user" property="editUser" />
+		<result column="suggested" property="suggested" />
+		<result column="displayorder" property="displayorder" />
+		<result column="moftec" property="moftec" />
+		<result column="view_mobile" property="viewMobile" />
+		<result column="audit_uid" property="auditUid" />
+		<result column="audit_datetime" property="auditDatetime" />
+		<result column="audit_ip" property="auditIp" />
+		<result column="su_view_last_time" property="viewLastTime" />
+		<result column="t_itemid" property="tItemid" />
+
+		<collection property="attachments" javaType="SdAttachments">
+			<id column="aid" property="aid" />
+			<result column="filename" property="filename" />
+			<result column="filetype" property="filetype" />
+			<result column="isimage" property="isimage" />
+			<result column="isprimeimage" property="isprimeimage" />
+			<result column="mainsite" property="mainsite" />
+			<result column="description" property="description" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="SdViewSubject" id="count">
+		<id column="sid" property="id" />
+		<result column="itemid" property="itemid" />
+		<result column="siteid" property="siteid" />
+		<result column="preid" property="preid" />
+		<result column="subject" property="subject" />
+		<result column="subtitle" property="subtitle" />
+		<result column="authorid" property="authorid" />
+		<result column="fromsite" property="fromsite" />
+		<result column="date" property="date" />
+		<result column="today_view" property="todayView" />
+		<result column="view" property="view" />
+		<result column="lookthroughed" property="lookthroughed" />
+		<result column="language" property="language" />
+		<result column="period" property="period" />
+		<result column="url" property="url" />
+		<result column="ic_id" property="icId" />
+		<result column="bhot" property="bhot" />
+		<result column="editdate" property="editdate" />
+		<result column="su_edit_user" property="editUser" />
+		<result column="suggested" property="suggested" />
+		<result column="displayorder" property="displayorder" />
+		<result column="moftec" property="moftec" />
+		<result column="view_mobile" property="viewMobile" />
+		<result column="audit_uid" property="auditUid" />
+		<result column="audit_datetime" property="auditDatetime" />
+		<result column="audit_ip" property="auditIp" />
+		<result column="su_view_last_time" property="viewLastTime" />
+		<result column="t_itemid" property="tItemid" />
+
+	</resultMap>
+
+	<select id="get" resultType="SdViewSubject" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		view_subject as s
+		left join attachments as a
+		on
+		a.sid
+		= s.sid
+		where s.sid =
+		#{sid}
+	</select>
+
+	<select id="select" resultType="SdViewSubject" parameterType="SdViewSubject"
+		resultMap="map">
+		select * from
+		view_subject as s
+		left join attachments as a
+		on a.sid =
+		s.sid
+		<include refid="where" />
+		<include refid="order" />
+		<if test="pageSize!= null">
+			limit #{pageSize}
+		</if>
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap">
+		select * from
+		view_subject as s
+		left join attachments as a
+		on a.sid =
+		s.sid
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdViewSubject"
+		resultMap="map">
+		select * from
+		view_subject as s
+		left join attachments as a
+		on a.sid =
+		s.sid
+		<include refid="where" />
+		<include refid="group" />
+		<include refid="having" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(DISTINCT s.sid) as total
+		from
+		view_subject as s
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdViewSubject" parameterType="map"
+		resultMap="map">
+		select * from
+		view_subject as s
+		left join attachments as a
+		on a.sid =
+		s.sid
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+	<!-- 返回形式改成map -->
+	<select id="count" resultType="map" parameterType="map">
+		select date,itemid,count(sid) as sid,sum(view) as view from
+		view_subject as s
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+	<!-- 处室统计 -->
+	<select id="depCount" resultType="map" parameterType="map">
+		select date,itemid,siteid,count(sid) as sid,sum(view) as view from
+		view_subject as s
+		<include refid="where" />
+		GROUP by s.siteid
+	</select>
+	<select id="itemCount" resultType="map" parameterType="map">
+		select max(date) as date,itemid,siteid,count(sid) as sid,sum(view) as view from
+		view_subject as s
+		<include refid="where" />
+		GROUP by s.itemid
+		order by s.date desc
+	</select>
+	<!-- 统计处室，根据栏目分组 -->
+	<select id="depItemCount" resultType="map" parameterType="map">
+		select * from
+		( select itemid,siteid,max(date) as date,count(sid) as sid,sum(view) as
+		view from
+		( select date, itemid,sid,view,siteid,lookthroughed from view_subject
+		as t
+		where t.lookthroughed = 2 and t.date > 0
+		<if test="depid !=null">
+			and t.siteid = #{depid}
+		</if>
+		<if test="stime != null">
+					<![CDATA[and t.date >= #{stime} ]]>
+		</if>
+		<if test="etime !=null">
+					<![CDATA[and t.date <= #{etime} ]]>
+		</if>
+		order by t.date desc
+		) as s
+		group by s.itemid
+		order by s.date desc
+		) as a
+		<if test="itemDate != null">
+			where <![CDATA[a.date <= #{itemDate}]]>
+		</if>
+	</select>
+
+	<select id="findDate" resultType="SdViewSubject" parameterType="map"
+		resultMap="map">
+		select * from
+		view_subject as s
+		<include refid="where" />
+		<include refid="order" />
+		limit 1
+	</select>
+
+	<select id="monthCount" resultType="map" parameterType="map">
+		select FROM_UNIXTIME(date,'%Y-%m') as ym,count(sid) as total from
+		view_subject as s
+		<include refid="where" />
+		GROUP BY ym
+		ORDER BY ym desc
+		<if test="pageSize != null">
+			limit #{pageSize}
+		</if>
+
+	</select>
+</mapper>

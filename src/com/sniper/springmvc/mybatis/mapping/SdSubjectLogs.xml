@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sniper.springmvc.model.SdSubjectLogs">
+	<!-- #{a}会被？替代 ${a}会直接显示原始字符 -->
+	<sql id="where">
+		<where>
+			<if test="sid != null ">
+				sl_sid = #{sid}
+			</if>
+		</where>
+	</sql>
+	<sql id="order">
+		<if test="order!=null">
+			ORDER BY ${order}
+		</if>
+	</sql>
+	<insert id="insert" parameterType="SdSubjectLogs">
+		INSERT INTO mc_subject_logs
+		(sl_sid,
+		sl_uid,sl_log_id,sl_time,sl_message)
+		VALUES(#{sid},#{uid},#{logId},#{time},#{message})
+	</insert>
+
+	<resultMap type="SdSubjectLogs" id="map">
+		<id column="sl_id" property="id" />
+		<result column="sl_sid" property="sid" />
+		<result column="sl_uid" property="uid" />
+		<result column="sl_log_id" property="logId" />
+		<result column="sl_time" property="time" />
+		<result column="sl_message" property="message" />
+	</resultMap>
+
+	<update id="update" parameterType="SdSubjectLogs">
+		UPDATE mc_subject_logs
+		<set>
+			<if test="sid != null">sl_sid=#{sid},</if>
+			<if test="uid != null">sl_uid=#{uid},</if>
+			<if test="logId != null">sl_log_id=#{logId},</if>
+		</set>
+		where id =#{id}
+	</update>
+	<!-- 按照新闻删除 -->
+	<delete id="delete" parameterType="string">
+		delete from mc_subject_logs
+		where
+		sl_sid=#{id}
+	</delete>
+
+	<select id="get" resultType="SdSubjectLogs" parameterType="string"
+		resultMap="map">
+		select *
+		from
+		mc_subject_logs
+		where sl_id =
+		#{id}
+	</select>
+
+	<select id="select" resultType="SdSubjectLogs" parameterType="SdSubjectLogs"
+		resultMap="map">
+		select * from
+		mc_subject_logs
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="selectMap" resultType="hashmap" parameterType="hashmap"
+		resultMap="map">
+		select * from
+		mc_subject_logs
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+	<select id="page" parameterType="map" resultType="SdSubjectLogs"
+		resultMap="map">
+		select * from
+		mc_subject_logs
+		<include refid="where" />
+		<include refid="order" />
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<select id="pageCount" parameterType="map" resultType="int">
+		select count(*)
+		from
+		mc_subject_logs
+		<include refid="where" />
+	</select>
+
+	<select id="find" resultType="SdSubjectLogs" parameterType="map"
+		resultMap="map">
+		select * from
+		mc_subject_logs
+		<include refid="where" />
+		<include refid="order" />
+	</select>
+
+</mapper>
